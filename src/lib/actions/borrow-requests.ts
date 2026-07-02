@@ -1,0 +1,83 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
+import type { TablesUpdate } from "@/types/database.types";
+
+type ActionResult = { success: true } | { success: false; error: string };
+
+const createSchema = z.object({
+  bookId: z.string().uuid(),
+  deliveryMethod: z.enum(["self_pickup", "mail"]),
+});
+
+export async function createBorrowRequest(
+  input: z.infer<typeof createSchema>,
+): Promise<ActionResult> {
+  const parsed = createSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "資料無效" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "請先登入" };
+
+  const { error } = await supabase.from("borrow_requests").insert({
+    requester_id: user.id,
+    book_id: parsed.data.bookId,
+    delivery_method: parsed.data.deliveryMethod,
+  });
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/borrow-requests");
+  return { success: true };
+}
+
+export async function cancelBorrowRequest(
+  borrowRequestId: string,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("borrow_requests")
+    .update({ status: "cancelled" })
+    .eq("id", borrowRequestId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/borrow-requests");
+  return { success: true };
+}
+
+const adminUpdateSchema = z.object({
+  borrowRequestId: z.string().uuid(),
+  status: z.enum(["requested", "approved", "picked_up", "returned", "cancelled"]),
+  adminNotes: z.string().max(500).optional(),
+});
+
+export async function adminUpdateBorrowRequestStatus(
+  input: z.infer<typeof adminUpdateSchema>,
+): Promise<ActionResult> {
+  const parsed = adminUpdateSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "資料無效" };
+
+  const supabase = await createClient();
+  const update: TablesUpdate<"borrow_requests"> = { status: parsed.data.status };
+  if (parsed.data.adminNotes !== undefined) update.admin_notes = parsed.data.adminNotes;
+  if (parsed.data.status === "approved") update.approved_at = new Date().toISOString();
+  if (parsed.data.status === "picked_up") update.picked_up_at = new Date().toISOString();
+  if (parsed.data.status === "returned") update.returned_at = new Date().toISOString();
+
+  const { error } = await supabase
+    .from("borrow_requests")
+    .update(update)
+    .eq("id", parsed.data.borrowRequestId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/borrow-requests");
+  revalidatePath("/borrow-requests");
+  return { success: true };
+}
