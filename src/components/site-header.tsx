@@ -84,6 +84,9 @@ export function SiteHeader({
                 <DropdownMenuItem render={<Link href="/borrow-requests" />}>
                   借閱紀錄
                 </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/course-progress" />}>
+                  學習進度
+                </DropdownMenuItem>
                 {isStaff && (
                   <>
                     <DropdownMenuSeparator />

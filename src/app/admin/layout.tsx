@@ -6,6 +6,7 @@ const ADMIN_NAV = [
   { href: "/admin/books", label: "書籍" },
   { href: "/admin/orders", label: "訂單" },
   { href: "/admin/borrow-requests", label: "借閱申請" },
+  { href: "/admin/courses", label: "課程" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
