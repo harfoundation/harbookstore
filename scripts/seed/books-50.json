@@ -1,0 +1,332 @@
+[
+  {
+    "poster_number": 1,
+    "category": "qibu",
+    "title": "認識耶穌",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 2,
+    "category": "qibu",
+    "title": "健康的門徒生活",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 3,
+    "category": "qibu",
+    "title": "零基礎默想",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 4,
+    "category": "qibu",
+    "title": "最重要的事—10課",
+    "author": null,
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 5,
+    "category": "renwu",
+    "title": "十架門徒",
+    "author": "斯托德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 6,
+    "category": "renwu",
+    "title": "學生命高峰",
+    "author": "余達心",
+    "needs_review": true
+  },
+  {
+    "poster_number": 7,
+    "category": "renwu",
+    "title": "他是畢德生",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 8,
+    "category": "renwu",
+    "title": "全民神學家",
+    "author": "巴刻",
+    "needs_review": true
+  },
+  {
+    "poster_number": 9,
+    "category": "renwu",
+    "title": "魯益師和與他的產地",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 10,
+    "category": "renwu",
+    "title": "上帝恩典的留聲機",
+    "author": null,
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 15,
+    "category": "jiaohui",
+    "title": "心意更新的教會",
+    "author": "斯托德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 16,
+    "category": "jiaohui",
+    "title": "21世紀教會成長學",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 17,
+    "category": "jiaohui",
+    "title": "21世紀門徒成長學",
+    "author": "吳正貫",
+    "needs_review": true
+  },
+  {
+    "poster_number": 18,
+    "category": "jiaohui",
+    "title": "教會生態學",
+    "author": null,
+    "needs_review": true
+  },
+  {
+    "poster_number": 19,
+    "category": "jiaohui",
+    "title": "教會的未來",
+    "author": "吉姆",
+    "needs_review": true
+  },
+  {
+    "poster_number": 20,
+    "category": "jiaohui",
+    "title": "第3次牧養革命",
+    "author": "路恩哲",
+    "needs_review": true
+  },
+  {
+    "poster_number": 21,
+    "category": "jiaohui",
+    "title": "夢想：建立使徒行傳的教會",
+    "author": "何用祚",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 22,
+    "category": "tianguo",
+    "title": "信主了，然後呢？",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 23,
+    "category": "tianguo",
+    "title": "天堂有什麼好期待？",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 24,
+    "category": "tianguo",
+    "title": "耶穌作王，什麼意思？",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 25,
+    "category": "tianguo",
+    "title": "21世紀天國藍圖",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 26,
+    "category": "tianguo",
+    "title": "天國進行式",
+    "author": "魏樂德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 27,
+    "category": "tianguo",
+    "title": "門徒好榜樣",
+    "author": "魏樂德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 28,
+    "category": "tianguo",
+    "title": "溫柔操練教導",
+    "author": "魏樂德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 29,
+    "category": "tianguo",
+    "title": "聖靈生療學",
+    "author": "包衡",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 30,
+    "category": "gengxin",
+    "title": "認識耶穌的十堂課",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 31,
+    "category": "gengxin",
+    "title": "神話語的力量",
+    "author": "賴特",
+    "needs_review": true
+  },
+  {
+    "poster_number": 32,
+    "category": "gengxin",
+    "title": "你說耶穌是誰？",
+    "author": "法蘭西",
+    "needs_review": true
+  },
+  {
+    "poster_number": 33,
+    "category": "gengxin",
+    "title": "神學通識30課",
+    "author": "周學信",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 34,
+    "category": "menxun",
+    "title": "加拉太書：點燃福音爆炸力",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 35,
+    "category": "menxun",
+    "title": "被釘十架的王",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 36,
+    "category": "menxun",
+    "title": "馬丁路德的門徒培育班",
+    "author": "提摩太·溫格爾",
+    "needs_review": true
+  },
+  {
+    "poster_number": 37,
+    "category": "menxun",
+    "title": "21世紀使命門徒",
+    "author": "董家驊",
+    "needs_review": true
+  },
+  {
+    "poster_number": 38,
+    "category": "menxun",
+    "title": "21世紀門徒現場",
+    "author": "董家驊",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 39,
+    "category": "zhichang",
+    "title": "職場軟實力",
+    "author": "克勞德",
+    "needs_review": true
+  },
+  {
+    "poster_number": 40,
+    "category": "zhichang",
+    "title": "樂於委身",
+    "author": "白崇亮",
+    "needs_review": true
+  },
+  {
+    "poster_number": 41,
+    "category": "zhichang",
+    "title": "使命門徒的職場生活",
+    "author": "董家驊",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 42,
+    "category": "zhenghe",
+    "title": "復活的理由",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 43,
+    "category": "zhenghe",
+    "title": "文化講道學",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 44,
+    "category": "zhenghe",
+    "title": "工作魅力",
+    "author": "凱勒",
+    "needs_review": true
+  },
+  {
+    "poster_number": 45,
+    "category": "zhenghe",
+    "title": "婚姻解密",
+    "author": "凱勒",
+    "needs_review": true
+  },
+
+  {
+    "poster_number": 46,
+    "category": "buquan",
+    "title": "跟耶穌學時間管理",
+    "author": "喬丹·雷諾",
+    "needs_review": true
+  },
+  {
+    "poster_number": 47,
+    "category": "buquan",
+    "title": "向未來學領導",
+    "author": "鮑辛格",
+    "needs_review": true
+  },
+  {
+    "poster_number": 48,
+    "category": "buquan",
+    "title": "信任的速度",
+    "author": "柯維",
+    "needs_review": true
+  },
+  {
+    "poster_number": 49,
+    "category": "buquan",
+    "title": "樂齡標竿",
+    "author": "葛培理",
+    "needs_review": true
+  },
+  {
+    "poster_number": 50,
+    "category": "buquan",
+    "title": "大閱讀家",
+    "author": "汗東尼",
+    "needs_review": true
+  }
+]
