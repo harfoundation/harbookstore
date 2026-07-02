@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBorrowRequest } from "@/lib/actions/borrow-requests";
+import { createClient } from "@/lib/supabase/client";
+
+type Branch = { id: string; suburb: string; city: string; state: string };
 
 export function BorrowRequestButton({
   bookId,
@@ -30,7 +33,23 @@ export function BorrowRequestButton({
   const [deliveryMethod, setDeliveryMethod] = useState<"self_pickup" | "mail">(
     "self_pickup",
   );
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [branchId, setBranchId] = useState<string>("");
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!open || branches.length > 0) return;
+    const supabase = createClient();
+    supabase
+      .from("branches")
+      .select("id, suburb, city, state")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }) => {
+        setBranches(data ?? []);
+        if (data?.[0]) setBranchId(data[0].id);
+      });
+  }, [open, branches.length]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -66,12 +85,42 @@ export function BorrowRequestButton({
             </SelectContent>
           </Select>
         </div>
+
+        {deliveryMethod === "self_pickup" && branches.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-sm font-medium">自取分店</p>
+            <Select
+              items={Object.fromEntries(
+                branches.map((b) => [b.id, `${b.suburb}（${b.city}, ${b.state}）`]),
+              )}
+              value={branchId}
+              onValueChange={(v) => setBranchId(v ?? "")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {branches.map((b) => (
+                  <SelectItem key={b.id} value={b.id}>
+                    {b.suburb}（{b.city}, {b.state}）
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         <DialogFooter>
           <Button
             disabled={isPending}
             onClick={() => {
               startTransition(async () => {
-                const result = await createBorrowRequest({ bookId, deliveryMethod });
+                const result = await createBorrowRequest({
+                  bookId,
+                  deliveryMethod,
+                  branchId:
+                    deliveryMethod === "self_pickup" ? branchId || undefined : undefined,
+                });
                 if (!result.success) {
                   toast.error(result.error);
                   return;

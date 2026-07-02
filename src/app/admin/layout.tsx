@@ -9,6 +9,9 @@ const ADMIN_NAV = [
   { href: "/admin/courses", label: "課程" },
   { href: "/admin/articles", label: "書評文章" },
   { href: "/admin/reader-questions", label: "人生解惑" },
+  { href: "/admin/branches", label: "分店" },
+  { href: "/admin/whatsapp-contacts", label: "WhatsApp 聯絡人" },
+  { href: "/admin/applications", label: "同工/志工申請" },
 ];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

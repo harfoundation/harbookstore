@@ -173,3 +173,123 @@ describe.skipIf(skip)("RLS policies", () => {
     expect(error).not.toBeNull();
   });
 });
+
+describe.skipIf(skip)("Partner submission workflow", () => {
+  let admin: SupabaseClient<Database>;
+  let partner: { client: SupabaseClient<Database>; userId: string };
+  let otherPartner: { client: SupabaseClient<Database>; userId: string };
+  let member: { client: SupabaseClient<Database>; userId: string };
+
+  beforeAll(async () => {
+    admin = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
+    const suffix = Date.now();
+    partner = await createTestUser(admin, `rls-partner-a-${suffix}@example.com`);
+    otherPartner = await createTestUser(admin, `rls-partner-b-${suffix}@example.com`);
+    member = await createTestUser(admin, `rls-member-${suffix}@example.com`);
+
+    await admin.from("profiles").update({ role: "partner" }).eq("id", partner.userId);
+    await admin
+      .from("profiles")
+      .update({ role: "partner" })
+      .eq("id", otherPartner.userId);
+  });
+
+  it("a plain member cannot submit a book", async () => {
+    const { error } = await member.client
+      .from("books")
+      .insert({ title: "member-submitted book should fail" });
+    expect(error).not.toBeNull();
+  });
+
+  it("a partner can submit their own book as pending_review/inactive", async () => {
+    const { data, error } = await partner.client
+      .from("books")
+      .insert({
+        title: "partner book",
+        submitted_by: partner.userId,
+        approval_status: "pending_review",
+        is_active: false,
+      })
+      .select("id, approval_status, is_active")
+      .single();
+    expect(error).toBeNull();
+    expect(data?.approval_status).toBe("pending_review");
+    expect(data?.is_active).toBe(false);
+  });
+
+  it("a partner cannot self-approve or self-activate their own submission", async () => {
+    const { data: book } = await partner.client
+      .from("books")
+      .insert({
+        title: "partner book to self-approve",
+        submitted_by: partner.userId,
+        approval_status: "pending_review",
+        is_active: false,
+      })
+      .select("id")
+      .single();
+
+    const { error } = await partner.client
+      .from("books")
+      .update({ approval_status: "approved", is_active: true })
+      .eq("id", book!.id);
+    expect(error).not.toBeNull();
+
+    const { data: check } = await admin
+      .from("books")
+      .select("approval_status, is_active")
+      .eq("id", book!.id)
+      .single();
+    expect(check?.approval_status).toBe("pending_review");
+    expect(check?.is_active).toBe(false);
+  });
+
+  it("a different partner cannot see another partner's pending submission", async () => {
+    const { data: book } = await partner.client
+      .from("books")
+      .insert({
+        title: "partner book visibility check",
+        submitted_by: partner.userId,
+        approval_status: "pending_review",
+        is_active: false,
+      })
+      .select("id")
+      .single();
+
+    const { data: check } = await otherPartner.client
+      .from("books")
+      .select("id")
+      .eq("id", book!.id);
+    expect(check).toHaveLength(0);
+  });
+
+  it("admin can approve a partner's submission", async () => {
+    const { data: book } = await partner.client
+      .from("books")
+      .insert({
+        title: "partner book admin approves",
+        submitted_by: partner.userId,
+        approval_status: "pending_review",
+        is_active: false,
+      })
+      .select("id")
+      .single();
+
+    const { error } = await admin
+      .from("books")
+      .update({ approval_status: "approved", is_active: true })
+      .eq("id", book!.id);
+    expect(error).toBeNull();
+
+    const { data: check } = await admin
+      .from("books")
+      .select("approval_status, is_active")
+      .eq("id", book!.id)
+      .single();
+    expect(check?.approval_status).toBe("approved");
+    expect(check?.is_active).toBe(true);
+  });
+});

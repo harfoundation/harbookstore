@@ -10,6 +10,7 @@ type ActionResult = { success: true } | { success: false; error: string };
 const createSchema = z.object({
   bookId: z.string().uuid(),
   deliveryMethod: z.enum(["self_pickup", "mail"]),
+  branchId: z.string().uuid().optional(),
 });
 
 export async function createBorrowRequest(
@@ -28,6 +29,10 @@ export async function createBorrowRequest(
     requester_id: user.id,
     book_id: parsed.data.bookId,
     delivery_method: parsed.data.deliveryMethod,
+    branch_id:
+      parsed.data.deliveryMethod === "self_pickup"
+        ? (parsed.data.branchId ?? null)
+        : null,
   });
 
   if (error) return { success: false, error: error.message };

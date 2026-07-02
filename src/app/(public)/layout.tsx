@@ -15,6 +15,7 @@ export default async function PublicLayout({ children }: { children: React.React
             : null
         }
         isStaff={isStaffRole(profile?.role)}
+        isPartner={profile?.role === "partner"}
       />
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">{children}</main>
       <SiteFooter />

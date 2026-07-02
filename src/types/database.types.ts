@@ -127,6 +127,7 @@ export type Database = {
       }
       books: {
         Row: {
+          approval_status: string
           author: string | null
           category_id: string | null
           cover_image_url: string | null
@@ -140,12 +141,15 @@ export type Database = {
           poster_number: number | null
           price_cents: number | null
           procurement_status: string
+          review_notes: string | null
           stock_qty: number
+          submitted_by: string | null
           title: string
           translator: string | null
           updated_at: string
         }
         Insert: {
+          approval_status?: string
           author?: string | null
           category_id?: string | null
           cover_image_url?: string | null
@@ -159,12 +163,15 @@ export type Database = {
           poster_number?: number | null
           price_cents?: number | null
           procurement_status?: string
+          review_notes?: string | null
           stock_qty?: number
+          submitted_by?: string | null
           title: string
           translator?: string | null
           updated_at?: string
         }
         Update: {
+          approval_status?: string
           author?: string | null
           category_id?: string | null
           cover_image_url?: string | null
@@ -178,7 +185,9 @@ export type Database = {
           poster_number?: number | null
           price_cents?: number | null
           procurement_status?: string
+          review_notes?: string | null
           stock_qty?: number
+          submitted_by?: string | null
           title?: string
           translator?: string | null
           updated_at?: string
@@ -191,6 +200,13 @@ export type Database = {
             referencedRelation: "book_categories"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "books_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       borrow_requests: {
@@ -198,6 +214,7 @@ export type Database = {
           admin_notes: string | null
           approved_at: string | null
           book_id: string
+          branch_id: string | null
           delivery_method: string
           due_at: string | null
           id: string
@@ -211,6 +228,7 @@ export type Database = {
           admin_notes?: string | null
           approved_at?: string | null
           book_id: string
+          branch_id?: string | null
           delivery_method?: string
           due_at?: string | null
           id?: string
@@ -224,6 +242,7 @@ export type Database = {
           admin_notes?: string | null
           approved_at?: string | null
           book_id?: string
+          branch_id?: string | null
           delivery_method?: string
           due_at?: string | null
           id?: string
@@ -242,6 +261,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "borrow_requests_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "borrow_requests_requester_id_fkey"
             columns: ["requester_id"]
             isOneToOne: false
@@ -249,6 +275,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      branches: {
+        Row: {
+          address: string | null
+          city: string
+          created_at: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          sort_order: number
+          state: string
+          suburb: string
+        }
+        Insert: {
+          address?: string | null
+          city: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          sort_order?: number
+          state: string
+          suburb: string
+        }
+        Update: {
+          address?: string | null
+          city?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          sort_order?: number
+          state?: string
+          suburb?: string
+        }
+        Relationships: []
       }
       course_progress: {
         Row: {
@@ -356,36 +418,68 @@ export type Database = {
       }
       courses: {
         Row: {
+          accreditation_note: string | null
+          approval_status: string
           cover_image_url: string | null
           created_at: string
           description: string | null
           id: string
           instructor_name: string | null
           is_published: boolean
+          price_cents: number | null
+          program_level: string | null
+          review_notes: string | null
+          service_category: string
           sort_order: number
+          submitted_by: string | null
+          term_label: string | null
           title: string
         }
         Insert: {
+          accreditation_note?: string | null
+          approval_status?: string
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           id?: string
           instructor_name?: string | null
           is_published?: boolean
+          price_cents?: number | null
+          program_level?: string | null
+          review_notes?: string | null
+          service_category?: string
           sort_order?: number
+          submitted_by?: string | null
+          term_label?: string | null
           title: string
         }
         Update: {
+          accreditation_note?: string | null
+          approval_status?: string
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           id?: string
           instructor_name?: string | null
           is_published?: boolean
+          price_cents?: number | null
+          program_level?: string | null
+          review_notes?: string | null
+          service_category?: string
           sort_order?: number
+          submitted_by?: string | null
+          term_label?: string | null
           title?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "courses_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       group_buys: {
         Row: {
@@ -466,6 +560,7 @@ export type Database = {
       order_items: {
         Row: {
           book_id: string | null
+          course_id: string | null
           id: string
           order_id: string
           quantity: number
@@ -473,6 +568,7 @@ export type Database = {
         }
         Insert: {
           book_id?: string | null
+          course_id?: string | null
           id?: string
           order_id: string
           quantity?: number
@@ -480,6 +576,7 @@ export type Database = {
         }
         Update: {
           book_id?: string | null
+          course_id?: string | null
           id?: string
           order_id?: string
           quantity?: number
@@ -494,6 +591,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "order_items_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "order_items_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
@@ -504,6 +608,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          branch_id: string | null
           buyer_id: string | null
           created_at: string
           currency: string
@@ -524,6 +629,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          branch_id?: string | null
           buyer_id?: string | null
           created_at?: string
           currency?: string
@@ -544,6 +650,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          branch_id?: string | null
           buyer_id?: string | null
           created_at?: string
           currency?: string
@@ -564,6 +671,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_buyer_id_fkey"
             columns: ["buyer_id"]
@@ -721,6 +835,116 @@ export type Database = {
           },
         ]
       }
+      team_applications: {
+        Row: {
+          admin_notes: string | null
+          applicant_id: string | null
+          application_type: string
+          contact_email: string
+          contact_phone: string | null
+          created_at: string
+          full_name: string
+          id: string
+          message: string | null
+          role_interest: string | null
+          status: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          applicant_id?: string | null
+          application_type: string
+          contact_email: string
+          contact_phone?: string | null
+          created_at?: string
+          full_name: string
+          id?: string
+          message?: string | null
+          role_interest?: string | null
+          status?: string
+        }
+        Update: {
+          admin_notes?: string | null
+          applicant_id?: string | null
+          application_type?: string
+          contact_email?: string
+          contact_phone?: string | null
+          created_at?: string
+          full_name?: string
+          id?: string
+          message?: string | null
+          role_interest?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_applications_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_contacts: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          imported_by: string | null
+          last_broadcast_sent_at: string | null
+          last_broadcast_status: string | null
+          notes: string | null
+          opt_in: boolean
+          phone_number: string
+          profile_id: string | null
+          source: string
+          tags: string[]
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          imported_by?: string | null
+          last_broadcast_sent_at?: string | null
+          last_broadcast_status?: string | null
+          notes?: string | null
+          opt_in?: boolean
+          phone_number: string
+          profile_id?: string | null
+          source?: string
+          tags?: string[]
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          imported_by?: string | null
+          last_broadcast_sent_at?: string | null
+          last_broadcast_status?: string | null
+          notes?: string | null
+          opt_in?: boolean
+          phone_number?: string
+          profile_id?: string | null
+          source?: string
+          tags?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_contacts_imported_by_fkey"
+            columns: ["imported_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wishlists: {
         Row: {
           book_id: string
@@ -783,6 +1007,7 @@ export type Database = {
     }
     Functions: {
       is_admin: { Args: { uid: string }; Returns: boolean }
+      is_partner: { Args: { uid: string }; Returns: boolean }
       is_staff: { Args: { uid: string }; Returns: boolean }
     }
     Enums: {

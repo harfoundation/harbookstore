@@ -1,5 +1,25 @@
 import { z } from "zod";
 
+export const serviceCategories = [
+  "course",
+  "workshop",
+  "diploma",
+  "retreat",
+  "outreach",
+  "ministry_service",
+] as const;
+
+export const programLevels = [
+  "certificate_i",
+  "certificate_ii",
+  "certificate_iii",
+  "certificate_iv",
+  "diploma_1",
+  "diploma_2",
+  "diploma_3",
+  "diploma_4",
+] as const;
+
 export const courseFormSchema = z.object({
   id: z.string().uuid().optional(),
   title: z.string().min(1, "請輸入課程名稱").max(200),
@@ -7,6 +27,11 @@ export const courseFormSchema = z.object({
   instructorName: z.string().max(100).optional(),
   isPublished: z.boolean(),
   sortOrder: z.number().int(),
+  priceCents: z.number().int().min(0).nullable(),
+  termLabel: z.string().max(100).optional(),
+  serviceCategory: z.enum(serviceCategories),
+  programLevel: z.enum(programLevels).nullable(),
+  accreditationNote: z.string().max(500).optional(),
 });
 export type CourseFormInput = z.infer<typeof courseFormSchema>;
 

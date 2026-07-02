@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_TC } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { LocaleProvider } from "@/components/locale-provider";
 import "./globals.css";
 
 const notoSansTC = Noto_Sans_TC({
@@ -25,8 +26,10 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant" className={`${notoSansTC.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
-        {children}
-        <Toaster richColors position="top-center" />
+        <LocaleProvider>
+          {children}
+          <Toaster richColors position="top-center" />
+        </LocaleProvider>
       </body>
     </html>
   );

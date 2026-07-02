@@ -4,7 +4,7 @@ export type CurrentProfile = {
   id: string;
   email: string | undefined;
   displayName: string | null;
-  role: "member" | "admin" | "committee" | "instructor";
+  role: "member" | "admin" | "committee" | "instructor" | "partner";
 };
 
 export async function getCurrentProfile(): Promise<CurrentProfile | null> {

@@ -15,6 +15,7 @@ const retailItemSchema = z.object({
 const retailOrderSchema = z.object({
   items: z.array(retailItemSchema).min(1),
   paymentMethod: z.enum(["bank_transfer", "in_person"]),
+  branchId: z.string().uuid().optional(),
   notes: z.string().max(1000).optional(),
 });
 
@@ -33,6 +34,11 @@ const groupBuyOrderSchema = z.object({
   groupBuyId: z.string().uuid(),
   bookId: z.string().uuid(),
   quantity: z.number().int().min(1).max(20),
+  paymentMethod: z.enum(["bank_transfer", "in_person"]),
+});
+
+const courseEnrollmentSchema = z.object({
+  courseId: z.string().uuid(),
   paymentMethod: z.enum(["bank_transfer", "in_person"]),
 });
 
@@ -69,7 +75,7 @@ export async function createRetailOrder(
   const { supabase, user } = await getAuthedUser();
   if (!user) return { success: false, error: "請先登入" };
 
-  const { items, paymentMethod, notes } = parsed.data;
+  const { items, paymentMethod, branchId, notes } = parsed.data;
   const priceMap = await fetchBookPrices(
     supabase,
     items.map((i) => i.bookId),
@@ -89,6 +95,7 @@ export async function createRetailOrder(
       buyer_id: user.id,
       order_type: "retail",
       payment_method: paymentMethod,
+      branch_id: branchId ?? null,
       subtotal_cents: subtotalCents,
       notes: notes || null,
     })
@@ -216,6 +223,58 @@ export async function createGroupBuyOrder(
   });
   revalidatePath("/orders");
   revalidatePath("/catalog");
+  return { success: true, orderNumber: order.order_number };
+}
+
+export async function createCourseEnrollmentOrder(
+  input: z.infer<typeof courseEnrollmentSchema>,
+): Promise<ActionResult> {
+  const parsed = courseEnrollmentSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "報名資料無效" };
+
+  const { supabase, user } = await getAuthedUser();
+  if (!user) return { success: false, error: "請先登入" };
+
+  const { courseId, paymentMethod } = parsed.data;
+  const { data: course } = await supabase
+    .from("courses")
+    .select("price_cents")
+    .eq("id", courseId)
+    .single();
+  const unitPriceCents = course?.price_cents ?? 0;
+
+  const { data: order, error: orderError } = await supabase
+    .from("orders")
+    .insert({
+      buyer_id: user.id,
+      order_type: "course_enrollment",
+      payment_method: paymentMethod,
+      subtotal_cents: unitPriceCents,
+    })
+    .select("id, order_number")
+    .single();
+
+  if (orderError || !order)
+    return { success: false, error: orderError?.message ?? "建立報名訂單失敗" };
+
+  const { error: itemsError } = await supabase.from("order_items").insert({
+    order_id: order.id,
+    course_id: courseId,
+    quantity: 1,
+    unit_price_cents: unitPriceCents,
+  });
+
+  if (itemsError) {
+    await supabase.from("orders").delete().eq("id", order.id);
+    return { success: false, error: itemsError.message };
+  }
+
+  await sendOrderConfirmationEmail({
+    userId: user.id,
+    orderNumber: order.order_number,
+    subtotalCents: unitPriceCents,
+  });
+  revalidatePath("/orders");
   return { success: true, orderNumber: order.order_number };
 }
 

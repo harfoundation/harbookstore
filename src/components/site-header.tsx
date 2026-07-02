@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createClient } from "@/lib/supabase/client";
+import { LocaleToggle } from "@/components/locale-toggle";
 import { toast } from "sonner";
 
 const NAV_LINKS = [
@@ -20,14 +21,18 @@ const NAV_LINKS = [
   { href: "/articles", label: "書評" },
   { href: "/ask", label: "人生解惑" },
   { href: "/lending", label: "借閱" },
+  { href: "/branches", label: "分店" },
+  { href: "/join", label: "加入我們" },
 ];
 
 export function SiteHeader({
   user,
   isStaff,
+  isPartner,
 }: {
   user: { id: string; email?: string; displayName: string | null } | null;
   isStaff: boolean;
+  isPartner?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -65,6 +70,7 @@ export function SiteHeader({
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <LocaleToggle />
           <Button render={<Link href="/cart" />} variant="ghost" size="sm">
             購物車{itemCount > 0 ? ` (${itemCount})` : ""}
           </Button>
@@ -87,6 +93,14 @@ export function SiteHeader({
                 <DropdownMenuItem render={<Link href="/course-progress" />}>
                   學習進度
                 </DropdownMenuItem>
+                {isPartner && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem render={<Link href="/partner/submissions" />}>
+                      合作夥伴中心
+                    </DropdownMenuItem>
+                  </>
+                )}
                 {isStaff && (
                   <>
                     <DropdownMenuSeparator />

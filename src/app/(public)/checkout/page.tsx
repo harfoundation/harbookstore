@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useCart } from "@/components/cart/cart-provider";
@@ -15,6 +15,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createRetailOrder } from "@/lib/actions/orders";
+import { createClient } from "@/lib/supabase/client";
+
+type Branch = { id: string; suburb: string; city: string; state: string };
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -22,8 +25,24 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"bank_transfer" | "in_person">(
     "bank_transfer",
   );
+  const [branches, setBranches] = useState<Branch[]>([]);
+  const [branchId, setBranchId] = useState<string>("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("branches")
+      .select("id, suburb, city, state")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }) => {
+        setBranches(data ?? []);
+        const defaultBranch = data?.[0];
+        if (defaultBranch) setBranchId(defaultBranch.id);
+      });
+  }, []);
 
   if (items.length === 0) {
     return (
@@ -39,6 +58,7 @@ export default function CheckoutPage() {
     const result = await createRetailOrder({
       items: items.map((i) => ({ bookId: i.bookId, quantity: i.quantity })),
       paymentMethod,
+      branchId: paymentMethod === "in_person" ? branchId || undefined : undefined,
       notes: notes || undefined,
     });
     setSubmitting(false);
@@ -90,6 +110,30 @@ export default function CheckoutPage() {
           </SelectContent>
         </Select>
       </div>
+
+      {paymentMethod === "in_person" && branches.length > 0 && (
+        <div className="space-y-1.5">
+          <Label>取件分店</Label>
+          <Select
+            items={Object.fromEntries(
+              branches.map((b) => [b.id, `${b.suburb}（${b.city}, ${b.state}）`]),
+            )}
+            value={branchId}
+            onValueChange={(v) => setBranchId(v ?? "")}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {branches.map((b) => (
+                <SelectItem key={b.id} value={b.id}>
+                  {b.suburb}（{b.city}, {b.state}）
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       <div className="space-y-1.5">
         <Label htmlFor="notes">備註（選填）</Label>

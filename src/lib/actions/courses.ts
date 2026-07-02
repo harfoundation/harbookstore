@@ -25,11 +25,76 @@ export async function upsertCourse(input: CourseFormInput): Promise<ActionResult
     instructor_name: v.instructorName || null,
     is_published: v.isPublished,
     sort_order: v.sortOrder,
+    price_cents: v.priceCents,
+    term_label: v.termLabel || null,
+    service_category: v.serviceCategory,
+    program_level: v.programLevel,
+    accreditation_note: v.accreditationNote || null,
   };
 
   const { error } = v.id
     ? await supabase.from("courses").update(row).eq("id", v.id)
     : await supabase.from("courses").insert(row);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/courses");
+  revalidatePath("/courses");
+  return { success: true };
+}
+
+export async function submitCourseForReview(
+  input: CourseFormInput,
+): Promise<ActionResult> {
+  const parsed = courseFormSchema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "課程資料無效" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "請先登入" };
+
+  const v = parsed.data;
+  const { error } = await supabase.from("courses").insert({
+    title: v.title,
+    description: v.description || null,
+    instructor_name: v.instructorName || null,
+    is_published: false,
+    sort_order: v.sortOrder,
+    price_cents: v.priceCents,
+    term_label: v.termLabel || null,
+    service_category: v.serviceCategory,
+    program_level: v.programLevel,
+    accreditation_note: v.accreditationNote || null,
+    submitted_by: user.id,
+    approval_status: "pending_review",
+  });
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/partner/submissions");
+  return { success: true };
+}
+
+const reviewSchema = { approved: true, rejected: true } as const;
+
+export async function adminReviewCourse(
+  courseId: string,
+  decision: "approved" | "rejected",
+  reviewNotes?: string,
+): Promise<ActionResult> {
+  if (!reviewSchema[decision]) return { success: false, error: "無效的審核結果" };
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("courses")
+    .update({
+      approval_status: decision,
+      review_notes: reviewNotes || null,
+      is_published: decision === "approved",
+    })
+    .eq("id", courseId);
 
   if (error) return { success: false, error: error.message };
 
