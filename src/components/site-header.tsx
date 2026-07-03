@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { HarBookstoreLogo } from "@/components/har-bookstore-logo";
 import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,16 +50,12 @@ export function SiteHeader({
     <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2">
-          <Image
-            src="/brand/har-foundation-logo.png"
-            alt="Har Foundation"
-            width={238}
-            height={32}
-            priority
-            className="h-6 w-auto sm:h-8"
-          />
-          <span className="text-muted-foreground hidden text-sm whitespace-nowrap sm:inline">
-            山書房 Har Bookstore
+          <HarBookstoreLogo className="text-foreground h-7 w-7" />
+          <span className="text-lg font-bold whitespace-nowrap">
+            山書房{" "}
+            <span className="text-muted-foreground hidden text-sm font-normal sm:inline">
+              Har Bookstore
+            </span>
           </span>
         </Link>
 

@@ -28,7 +28,7 @@ create policy "branches_admin_write"
   with check (public.is_admin(auth.uid()));
 
 insert into public.branches (state, city, suburb, address, is_default, sort_order) values
-  ('VIC', 'Melbourne', 'Box Hill', NULL, true, 1);
+  ('VIC', 'Melbourne', 'Box Hill', '2–6 Oxford Street, (Wesley Uniting Church Box Hill), Box Hill, VIC 3128', true, 1);
 
 -- Optional pickup-branch reference on orders/borrow_requests (self_pickup /
 -- in_person only — nullable, no behavior change for mail/digital deliveries).
