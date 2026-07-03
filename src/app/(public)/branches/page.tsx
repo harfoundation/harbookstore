@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WhatsappContactCard } from "@/components/whatsapp-contact-card";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "分店" };
@@ -41,6 +42,8 @@ export default async function BranchesPage() {
           </Card>
         ))}
       </div>
+
+      <WhatsappContactCard />
     </div>
   );
 }
