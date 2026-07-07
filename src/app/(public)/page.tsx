@@ -7,10 +7,20 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const { data: categories } = await supabase
-    .from("book_categories")
-    .select("id, slug, name_zh, subtitle_zh")
-    .order("sort_order");
+  const todayIso = new Date().toISOString().slice(0, 10);
+  const [{ data: categories }, { data: upcomingEvents }] = await Promise.all([
+    supabase
+      .from("book_categories")
+      .select("id, slug, name_zh, subtitle_zh")
+      .order("sort_order"),
+    supabase
+      .from("events")
+      .select("id, slug, title, event_date, event_time, location, poster_image_url")
+      .eq("status", "published")
+      .gte("event_date", todayIso)
+      .order("event_date", { ascending: true })
+      .limit(3),
+  ]);
 
   return (
     <div className="space-y-12">
@@ -29,6 +39,48 @@ export default async function HomePage() {
           </Button>
         </div>
       </section>
+
+      {(upcomingEvents ?? []).length > 0 && (
+        <section>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">近期活動</h2>
+            <Link
+              href="/events"
+              className="text-primary text-sm underline underline-offset-4"
+            >
+              查看全部
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(upcomingEvents ?? []).map((event) => (
+              <Link key={event.id} href={`/events/${event.slug}`}>
+                <Card className="h-full overflow-hidden transition-shadow hover:shadow-md">
+                  {event.poster_image_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={event.poster_image_url}
+                      alt={event.title}
+                      className="aspect-[3/4] w-full object-cover"
+                    />
+                  )}
+                  <CardHeader>
+                    <CardTitle className="text-base">{event.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-1">
+                    <p className="text-muted-foreground text-sm">
+                      {event.event_date}
+                      {event.event_time ? `　${event.event_time}` : ""}
+                    </p>
+                    {event.location && (
+                      <p className="text-muted-foreground text-sm">{event.location}</p>
+                    )}
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 className="mb-4 text-xl font-semibold">閱讀路徑推薦</h2>

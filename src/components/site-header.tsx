@@ -17,11 +17,15 @@ import { LocaleToggle } from "@/components/locale-toggle";
 import { toast } from "sonner";
 
 const NAV_LINKS = [
+  { href: "/events", label: "活動公告" },
   { href: "/catalog", label: "書目" },
   { href: "/courses", label: "課程" },
   { href: "/articles", label: "書評" },
+  { href: "/devotionals", label: "靈修文集" },
   { href: "/ask", label: "人生解惑" },
   { href: "/lending", label: "借閱" },
+  { href: "/secondhand", label: "二手品" },
+  { href: "/bookings", label: "線下預約" },
   { href: "/branches", label: "分店" },
   { href: "/join", label: "加入我們" },
 ];

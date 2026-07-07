@@ -98,6 +98,90 @@ export type Database = {
           },
         ]
       }
+      attendance_checkins: {
+        Row: {
+          checked_in_at: string
+          display_name: string
+          id: string
+          member_id: string | null
+          member_type: string
+          notes: string | null
+          session_id: string
+        }
+        Insert: {
+          checked_in_at?: string
+          display_name: string
+          id?: string
+          member_id?: string | null
+          member_type: string
+          notes?: string | null
+          session_id: string
+        }
+        Update: {
+          checked_in_at?: string
+          display_name?: string
+          id?: string
+          member_id?: string | null
+          member_type?: string
+          notes?: string | null
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_checkins_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "congregation_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_checkins_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "attendance_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      attendance_sessions: {
+        Row: {
+          congregation_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          service_date: string
+        }
+        Insert: {
+          congregation_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          service_date: string
+        }
+        Update: {
+          congregation_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          service_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_sessions_congregation_id_fkey"
+            columns: ["congregation_id"]
+            isOneToOne: false
+            referencedRelation: "congregations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       book_categories: {
         Row: {
           cover_image_url: string | null
@@ -124,6 +208,47 @@ export type Database = {
           subtitle_zh?: string | null
         }
         Relationships: []
+      }
+      bookable_services: {
+        Row: {
+          branch_id: string | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          branch_id?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          branch_id?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookable_services_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       books: {
         Row: {
@@ -312,6 +437,74 @@ export type Database = {
         }
         Relationships: []
       }
+      congregation_members: {
+        Row: {
+          congregation_id: string
+          created_at: string
+          display_name: string
+          id: string
+          is_active: boolean
+          member_type: string
+          notes: string | null
+          sort_order: number
+        }
+        Insert: {
+          congregation_id: string
+          created_at?: string
+          display_name: string
+          id?: string
+          is_active?: boolean
+          member_type?: string
+          notes?: string | null
+          sort_order?: number
+        }
+        Update: {
+          congregation_id?: string
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_active?: boolean
+          member_type?: string
+          notes?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "congregation_members_congregation_id_fkey"
+            columns: ["congregation_id"]
+            isOneToOne: false
+            referencedRelation: "congregations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      congregations: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          name: string
+          service_period: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          service_period: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          service_period?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       course_progress: {
         Row: {
           completed: boolean
@@ -481,6 +674,235 @@ export type Database = {
           },
         ]
       }
+      devotional_books: {
+        Row: {
+          afterword_markdown: string | null
+          author_bio_markdown: string | null
+          author_id: string | null
+          author_name: string | null
+          cover_image_url: string | null
+          created_at: string
+          declaration_markdown: string | null
+          id: string
+          preface_markdown: string | null
+          slug: string
+          status: string
+          subtitle: string | null
+          title_en: string | null
+          title_zh: string
+          topic_index: string[]
+          updated_at: string
+        }
+        Insert: {
+          afterword_markdown?: string | null
+          author_bio_markdown?: string | null
+          author_id?: string | null
+          author_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          declaration_markdown?: string | null
+          id?: string
+          preface_markdown?: string | null
+          slug: string
+          status?: string
+          subtitle?: string | null
+          title_en?: string | null
+          title_zh: string
+          topic_index?: string[]
+          updated_at?: string
+        }
+        Update: {
+          afterword_markdown?: string | null
+          author_bio_markdown?: string | null
+          author_id?: string | null
+          author_name?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          declaration_markdown?: string | null
+          id?: string
+          preface_markdown?: string | null
+          slug?: string
+          status?: string
+          subtitle?: string | null
+          title_en?: string | null
+          title_zh?: string
+          topic_index?: string[]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devotional_books_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devotional_entries: {
+        Row: {
+          author_id: string | null
+          body_markdown: string
+          book_id: string
+          created_at: string
+          entry_number: number
+          id: string
+          scripture_reference: string | null
+          status: string
+          subtitle: string | null
+          title: string
+          updated_at: string
+          volume_id: string
+          written_date: string | null
+        }
+        Insert: {
+          author_id?: string | null
+          body_markdown: string
+          book_id: string
+          created_at?: string
+          entry_number: number
+          id?: string
+          scripture_reference?: string | null
+          status?: string
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+          volume_id: string
+          written_date?: string | null
+        }
+        Update: {
+          author_id?: string | null
+          body_markdown?: string
+          book_id?: string
+          created_at?: string
+          entry_number?: number
+          id?: string
+          scripture_reference?: string | null
+          status?: string
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+          volume_id?: string
+          written_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devotional_entries_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devotional_entries_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "devotional_books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devotional_entries_volume_id_fkey"
+            columns: ["volume_id"]
+            isOneToOne: false
+            referencedRelation: "devotional_volumes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devotional_volumes: {
+        Row: {
+          book_id: string
+          id: string
+          intro_markdown: string | null
+          sort_order: number
+          subtitle_zh: string | null
+          title_zh: string
+          volume_number: number
+        }
+        Insert: {
+          book_id: string
+          id?: string
+          intro_markdown?: string | null
+          sort_order?: number
+          subtitle_zh?: string | null
+          title_zh: string
+          volume_number: number
+        }
+        Update: {
+          book_id?: string
+          id?: string
+          intro_markdown?: string | null
+          sort_order?: number
+          subtitle_zh?: string | null
+          title_zh?: string
+          volume_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devotional_volumes_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "devotional_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          body_markdown: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_date: string
+          event_time: string | null
+          id: string
+          location: string | null
+          poster_image_url: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body_markdown?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date: string
+          event_time?: string | null
+          id?: string
+          location?: string | null
+          poster_image_url?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body_markdown?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_date?: string
+          event_time?: string | null
+          id?: string
+          location?: string | null
+          poster_image_url?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_buys: {
         Row: {
           book_id: string
@@ -564,6 +986,7 @@ export type Database = {
           id: string
           order_id: string
           quantity: number
+          secondhand_item_id: string | null
           unit_price_cents: number
         }
         Insert: {
@@ -572,6 +995,7 @@ export type Database = {
           id?: string
           order_id: string
           quantity?: number
+          secondhand_item_id?: string | null
           unit_price_cents: number
         }
         Update: {
@@ -580,6 +1004,7 @@ export type Database = {
           id?: string
           order_id?: string
           quantity?: number
+          secondhand_item_id?: string | null
           unit_price_cents?: number
         }
         Relationships: [
@@ -602,6 +1027,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_secondhand_item_id_fkey"
+            columns: ["secondhand_item_id"]
+            isOneToOne: false
+            referencedRelation: "secondhand_items"
             referencedColumns: ["id"]
           },
         ]
@@ -831,6 +1263,155 @@ export type Database = {
             columns: ["submitter_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      secondhand_items: {
+        Row: {
+          author: string | null
+          branch_id: string | null
+          category_id: string | null
+          condition: string
+          cover_image_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          price_cents: number
+          status: string
+          submitted_by: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          branch_id?: string | null
+          category_id?: string | null
+          condition: string
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_cents: number
+          status?: string
+          submitted_by?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          branch_id?: string | null
+          category_id?: string | null
+          condition?: string
+          cover_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          price_cents?: number
+          status?: string
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "secondhand_items_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secondhand_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "book_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "secondhand_items_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_bookings: {
+        Row: {
+          admin_reply_message: string | null
+          created_at: string
+          customer_email: string
+          customer_id: string | null
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          party_size: number | null
+          preferred_date: string
+          preferred_time: string | null
+          responded_at: string | null
+          responded_by: string | null
+          service_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          admin_reply_message?: string | null
+          created_at?: string
+          customer_email: string
+          customer_id?: string | null
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          party_size?: number | null
+          preferred_date: string
+          preferred_time?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          service_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          admin_reply_message?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_id?: string | null
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          party_size?: number | null
+          preferred_date?: string
+          preferred_time?: string | null
+          responded_at?: string | null
+          responded_by?: string | null
+          service_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bookings_responded_by_fkey"
+            columns: ["responded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "bookable_services"
             referencedColumns: ["id"]
           },
         ]

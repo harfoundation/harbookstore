@@ -16,6 +16,8 @@ const TYPE_LABEL: Record<string, string> = {
   retail: "零售訂購",
   group_buy: "團購",
   gift: "贈書",
+  course_enrollment: "課程報名",
+  secondhand: "二手品",
 };
 
 export default async function OrdersPage() {
@@ -23,7 +25,7 @@ export default async function OrdersPage() {
   const { data: orders } = await supabase
     .from("orders")
     .select(
-      "id, order_number, order_type, status, subtotal_cents, payment_method, created_at, order_items(quantity, unit_price_cents, books(title))",
+      "id, order_number, order_type, status, subtotal_cents, payment_method, created_at, order_items(quantity, unit_price_cents, books(title), courses(title), secondhand_items(title))",
     )
     .order("created_at", { ascending: false });
 
@@ -52,13 +54,19 @@ export default async function OrdersPage() {
                 </div>
               </div>
               <ul className="text-muted-foreground text-sm">
-                {(order.order_items ?? []).map((item, idx) => (
-                  <li key={idx}>
-                    {(item.books as unknown as { title: string } | null)?.title ??
-                      "（書籍）"}{" "}
-                    × {item.quantity}
-                  </li>
-                ))}
+                {(order.order_items ?? []).map((item, idx) => {
+                  const productName =
+                    (item.books as unknown as { title: string } | null)?.title ??
+                    (item.courses as unknown as { title: string } | null)?.title ??
+                    (item.secondhand_items as unknown as { title: string } | null)
+                      ?.title ??
+                    "（項目）";
+                  return (
+                    <li key={idx}>
+                      {productName} × {item.quantity}
+                    </li>
+                  );
+                })}
               </ul>
               <p className="text-sm font-medium">
                 總計：AUD ${(order.subtotal_cents / 100).toFixed(2)}
