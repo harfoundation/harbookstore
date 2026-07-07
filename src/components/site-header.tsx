@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { HarBookstoreLogo } from "@/components/har-bookstore-logo";
 import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
@@ -40,14 +40,20 @@ export function SiteHeader({
   isPartner?: boolean;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { itemCount } = useCart();
 
   async function handleSignOut() {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error(`登出失敗：${error.message}`);
+      return;
+    }
     toast.success("已登出");
-    router.refresh();
+    // Hard navigation instead of router.refresh(): guarantees the next
+    // request re-evaluates auth cookies fresh rather than relying on the
+    // RSC cache picking up the just-cleared session.
+    window.location.href = "/";
   }
 
   return (
@@ -120,7 +126,7 @@ export function SiteHeader({
                   </>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={handleSignOut}>登出</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>登出</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
