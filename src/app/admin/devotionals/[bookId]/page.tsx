@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DevotionalVolumeFormDialog } from "@/components/admin/devotional-volume-form-dialog";
+import { DevotionalBookFormDialog } from "@/components/admin/devotional-book-form-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -31,7 +32,9 @@ export default async function AdminDevotionalBookPage({
 
   const { data: book } = await supabase
     .from("devotional_books")
-    .select("id, slug, title_zh, author_name")
+    .select(
+      "id, slug, title_zh, title_en, author_name, author_bio_markdown, declaration_markdown, preface_markdown, afterword_markdown, topic_index, status",
+    )
     .eq("id", bookId)
     .single();
 
@@ -60,6 +63,10 @@ export default async function AdminDevotionalBookPage({
           )}
         </div>
         <div className="flex gap-2">
+          <DevotionalBookFormDialog
+            book={book}
+            trigger={<Button variant="outline">編輯書籍（序言／聲明／後記等）</Button>}
+          />
           <Button variant="outline" render={<Link href={`/devotionals/${book.slug}`} />}>
             預覽書籍
           </Button>
