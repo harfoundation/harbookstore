@@ -29,12 +29,18 @@ export type EpubBook = {
   afterword_markdown: string | null;
 };
 
+// No explicit body font-size previously — most e-readers (Apple Books
+// included) then fall back to an oversized default reading size, and the
+// 1.4em/1.2em headings compounded on top of that. Pinning an explicit,
+// modest base size fixes it for every book this generator produces.
 const STYLE_CSS = `
-body { font-family: serif; line-height: 1.8; margin: 1.5em; }
-h1 { font-size: 1.4em; }
-h2 { font-size: 1.2em; }
-.meta { color: #666; font-size: 0.9em; margin-bottom: 1em; }
-.subtitle { color: #a33; font-weight: bold; margin-top: -0.5em; }
+html { font-size: 100%; }
+body { font-family: serif; font-size: 0.9em; line-height: 1.7; margin: 1.5em; }
+p { font-size: 1em; margin: 0.7em 0; }
+h1 { font-size: 1.3em; margin: 1em 0 0.5em; }
+h2 { font-size: 1.1em; margin: 0.8em 0 0.4em; }
+.meta { color: #666; font-size: 0.85em; margin-bottom: 1em; }
+.subtitle { color: #a33; font-weight: bold; font-size: 1em; margin-top: -0.5em; }
 `;
 
 function xhtmlPage(title: string, bodyHtml: string): string {
