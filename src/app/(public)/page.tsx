@@ -27,7 +27,7 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12">
-      <section className="space-y-4 text-center">
+      <section className="space-y-6 py-8 text-center sm:py-12">
         {isStaff && (
           <div className="flex justify-center">
             <Link
@@ -38,14 +38,14 @@ export default async function HomePage() {
             </Link>
           </div>
         )}
-        <h1 className="text-3xl font-bold sm:text-4xl">
+        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
           山書坊 <span className="font-poppins">Har Book Club</span>
         </h1>
-        <p className="text-muted-foreground mx-auto max-w-2xl text-balance">
+        <p className="text-muted-foreground mx-auto max-w-2xl text-balance text-lg">
           陪你回到耶穌，建立根基——培訓課程、書評專欄、團購贈書與免費借閱，
           一個以人為本的基督教書籍事工。
         </p>
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-3 pt-2">
           <Button render={<Link href="/catalog" />} size="lg">
             瀏覽書目
           </Button>
