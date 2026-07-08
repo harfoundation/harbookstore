@@ -13,13 +13,18 @@ export default async function ChurchRegisterPage({
   const { slug } = await params;
   const supabase = await createClient();
 
-  const { data: church } = await supabase
-    .from("churches")
-    .select("id, slug, name_zh, is_active")
+  // public_church_directory only exposes active churches — registration
+  // shouldn't be open for an inactive one anyway.
+  const { data: rawChurch } = await supabase
+    .from("public_church_directory")
+    .select("id, slug, name_zh")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (!church || !church.is_active) notFound();
+  // id/slug/name_zh are NOT NULL on the underlying table; the view's
+  // generated type just doesn't carry that through.
+  if (!rawChurch || !rawChurch.id || !rawChurch.slug || !rawChurch.name_zh) notFound();
+  const church = rawChurch as typeof rawChurch & { id: string; slug: string; name_zh: string };
 
   const { data: congregations } = await supabase
     .from("congregations")

@@ -21,13 +21,32 @@ export default async function ChurchHomePage({
   const profile = await getCurrentProfile();
   const isStaff = isStaffRole(profile?.role);
 
-  const { data: church } = await supabase
-    .from("churches")
-    .select("id, slug, name_zh, name_en, is_active")
+  // public_church_directory is a view exposing only safe (non-billing,
+  // non-contact) columns for active churches, readable by anon — the
+  // underlying churches table itself is staff-only via RLS. Staff fall back
+  // to the full table so they can preview an inactive/draft church.
+  const { data: publicChurch } = await supabase
+    .from("public_church_directory")
+    .select("id, slug, name_zh, name_en")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  if (!church || (!church.is_active && !isStaff)) notFound();
+  const rawChurch = publicChurch
+    ? { ...publicChurch, is_active: true }
+    : isStaff
+      ? (
+          await supabase
+            .from("churches")
+            .select("id, slug, name_zh, name_en, is_active")
+            .eq("slug", slug)
+            .maybeSingle()
+        ).data
+      : null;
+
+  // id/slug/name_zh are NOT NULL on the underlying table; the view's
+  // generated type just doesn't carry that through.
+  if (!rawChurch || !rawChurch.id || !rawChurch.slug || !rawChurch.name_zh) notFound();
+  const church = rawChurch as typeof rawChurch & { id: string; slug: string; name_zh: string };
 
   const [{ data: services }, materialsQuery, announcementsQuery] = await Promise.all([
     supabase
