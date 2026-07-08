@@ -51,7 +51,7 @@ export function LoginForm() {
     <div className="mx-auto max-w-sm space-y-6">
       <div className="space-y-1 text-center">
         <h1 className="text-2xl font-bold">登入</h1>
-        <p className="text-muted-foreground text-sm">歡迎回到山書房</p>
+        <p className="text-muted-foreground text-sm">歡迎回到山書坊</p>
       </div>
 
       <Button

@@ -5,11 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export const metadata: Metadata = { title: "管理後台" };
 
 const SECTIONS = [
+  {
+    href: "/admin/churches",
+    label: "堂會服務（多堂會）",
+    description: "多堂會每週聚會、敬拜詩歌、講道 PPT、報名與通知（含收費）",
+  },
   { href: "/admin/events", label: "活動公告", description: "發布/編輯活動公告" },
   { href: "/admin/check-in", label: "主日人員登記", description: "主日打卡、新朋友登記" },
   {
     href: "/admin/congregations",
-    label: "堂會管理",
+    label: "主日名冊管理",
     description: "堂會與同工/老朋友名單",
   },
   { href: "/admin/books", label: "書籍", description: "書目管理" },

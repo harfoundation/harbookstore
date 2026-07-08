@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { HarBookstoreLogo } from "@/components/har-bookstore-logo";
 import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: "/catalog", label: "書目" },
   { href: "/courses", label: "課程" },
   { href: "/articles", label: "書評" },
+  { href: "/reading-shares", label: "讀書分享" },
   { href: "/devotionals", label: "靈修文集" },
   { href: "/ask", label: "人生解惑" },
   { href: "/lending", label: "借閱" },
@@ -60,11 +61,18 @@ export function SiteHeader({
     <header className="border-border bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2">
-          <HarBookstoreLogo className="text-foreground h-7 w-7" />
+          <Image
+            src="/brand/har-foundation-logo.png"
+            alt="Har Foundation"
+            width={178}
+            height={24}
+            className="h-6 w-auto"
+            priority
+          />
           <span className="text-lg font-bold whitespace-nowrap">
-            山書房{" "}
-            <span className="text-muted-foreground hidden text-sm font-normal sm:inline">
-              Har Bookstore
+            山書坊{" "}
+            <span className="font-poppins text-muted-foreground hidden text-sm font-medium sm:inline">
+              Har Book Club
             </span>
           </span>
         </Link>

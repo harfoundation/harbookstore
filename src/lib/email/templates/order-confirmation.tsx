@@ -20,7 +20,7 @@ export function OrderConfirmationEmail({
   return (
     <Html>
       <Head />
-      <Preview>山書房訂單確認 {orderNumber}</Preview>
+      <Preview>山書坊訂單確認 {orderNumber}</Preview>
       <Body
         style={{ fontFamily: "sans-serif", backgroundColor: "#f6f6f6", padding: "24px" }}
       >
@@ -34,7 +34,7 @@ export function OrderConfirmationEmail({
             請透過銀行轉帳完成付款，並在轉帳備註中註明訂單編號，以便我們儘快確認。
             如有任何問題，歡迎隨時聯絡我們。
           </Text>
-          <Text>山書房 Har Bookstore 敬上</Text>
+          <Text>山書坊 Har Book Club 敬上</Text>
         </Container>
       </Body>
     </Html>

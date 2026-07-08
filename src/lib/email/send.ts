@@ -7,7 +7,7 @@ import { BookingRespondedEmail } from "@/lib/email/templates/booking-responded";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM =
-  process.env.RESEND_FROM_EMAIL ?? "山書房 Har Bookstore <no-reply@harfoundation.org.au>";
+  process.env.RESEND_FROM_EMAIL ?? "山書坊 Har Book Club <no-reply@harfoundation.org.au>";
 
 export async function sendOrderConfirmationEmail(params: {
   userId: string;
@@ -29,7 +29,7 @@ export async function sendOrderConfirmationEmail(params: {
   await resend.emails.send({
     from: FROM,
     to,
-    subject: `訂單確認 ${params.orderNumber} — 山書房`,
+    subject: `訂單確認 ${params.orderNumber} — 山書坊`,
     react: OrderConfirmationEmail({
       orderNumber: params.orderNumber,
       subtotalCents: params.subtotalCents,
@@ -53,7 +53,7 @@ export async function sendBookingSubmittedEmail(params: {
   await resend.emails.send({
     from: FROM,
     to: params.to,
-    subject: `預約已收到 — ${params.serviceName} — 山書房`,
+    subject: `預約已收到 — ${params.serviceName} — 山書坊`,
     react: BookingSubmittedEmail({
       serviceName: params.serviceName,
       preferredDate: params.preferredDate,
@@ -80,7 +80,7 @@ export async function sendBookingRespondedEmail(params: {
   await resend.emails.send({
     from: FROM,
     to: params.to,
-    subject: `預約${params.status === "confirmed" ? "已確認" : "無法安排"} — ${params.serviceName} — 山書房`,
+    subject: `預約${params.status === "confirmed" ? "已確認" : "無法安排"} — ${params.serviceName} — 山書坊`,
     react: BookingRespondedEmail({
       serviceName: params.serviceName,
       preferredDate: params.preferredDate,

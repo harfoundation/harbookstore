@@ -22,18 +22,40 @@ const PERIOD_LABELS: Record<string, string> = {
   evening: "晚上",
 };
 
-export default async function AdminCongregationsPage() {
+export default async function AdminCongregationsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ church?: string }>;
+}) {
+  const { church } = await searchParams;
   const supabase = await createClient();
+
+  const { data: churchRow } = await supabase
+    .from("churches")
+    .select("id, name_zh")
+    .eq("slug", church ?? "wesley-boxhill")
+    .single();
+
+  const churchId = churchRow?.id;
+
   const { data: congregations } = await supabase
     .from("congregations")
     .select("id, name, service_period, sort_order, is_active")
+    .eq("church_id", churchId ?? "")
     .order("sort_order");
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">堂會管理</h1>
-        <CongregationFormDialog trigger={<Button>新增堂會</Button>} />
+        <div>
+          <h1 className="text-xl font-bold">堂會管理</h1>
+          {churchRow && (
+            <p className="text-muted-foreground text-sm">{churchRow.name_zh}</p>
+          )}
+        </div>
+        {churchId && (
+          <CongregationFormDialog churchId={churchId} trigger={<Button>新增堂會</Button>} />
+        )}
       </div>
 
       <Table>
@@ -56,14 +78,17 @@ export default async function AdminCongregationsPage() {
                 </Badge>
               </TableCell>
               <TableCell className="flex justify-end gap-2">
-                <CongregationFormDialog
-                  congregation={cong}
-                  trigger={
-                    <Button variant="outline" size="sm">
-                      編輯
-                    </Button>
-                  }
-                />
+                {churchId && (
+                  <CongregationFormDialog
+                    churchId={churchId}
+                    congregation={cong}
+                    trigger={
+                      <Button variant="outline" size="sm">
+                        編輯
+                      </Button>
+                    }
+                  />
+                )}
                 <Button
                   render={<Link href={`/admin/congregations/${cong.id}/roster`} />}
                   size="sm"

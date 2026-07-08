@@ -8,6 +8,8 @@ import { AddToCartButton } from "@/components/catalog/add-to-cart-button";
 import { WishlistButton } from "@/components/catalog/wishlist-button";
 import { BorrowRequestButton } from "@/components/catalog/borrow-request-button";
 import { GroupBuyWidget } from "@/components/catalog/group-buy-widget";
+import { ReadingShareCard } from "@/components/reading-shares/reading-share-card";
+import { isStaffRole } from "@/lib/auth/get-current-profile";
 
 export const dynamic = "force-dynamic";
 
@@ -27,29 +29,36 @@ export default async function BookDetailPage({
   const supabase = await createClient();
   const profile = await getCurrentProfile();
 
-  const [{ data: book }, { data: groupBuy }, wishlistResult] = await Promise.all([
-    supabase
-      .from("books")
-      .select(
-        "id, title, author, translator, description, price_cents, procurement_status, is_lendable, cover_image_url, category_id, book_categories(slug, name_zh)",
-      )
-      .eq("id", bookId)
-      .single(),
-    supabase
-      .from("group_buys")
-      .select("id, current_qty, target_qty, status")
-      .eq("book_id", bookId)
-      .eq("status", "open")
-      .maybeSingle(),
-    profile
-      ? supabase
-          .from("wishlists")
-          .select("book_id")
-          .eq("profile_id", profile.id)
-          .eq("book_id", bookId)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
-  ]);
+  const [{ data: book }, { data: groupBuy }, wishlistResult, { data: shares }] =
+    await Promise.all([
+      supabase
+        .from("books")
+        .select(
+          "id, title, author, translator, description, price_cents, procurement_status, is_lendable, cover_image_url, category_id, book_categories(slug, name_zh)",
+        )
+        .eq("id", bookId)
+        .single(),
+      supabase
+        .from("group_buys")
+        .select("id, current_qty, target_qty, status")
+        .eq("book_id", bookId)
+        .eq("status", "open")
+        .maybeSingle(),
+      profile
+        ? supabase
+            .from("wishlists")
+            .select("book_id")
+            .eq("profile_id", profile.id)
+            .eq("book_id", bookId)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      supabase
+        .from("reading_shares")
+        .select("id, shared_by_name, source_group, quote_text, is_hidden, created_at")
+        .eq("book_id", bookId)
+        .order("created_at", { ascending: false })
+        .limit(5),
+    ]);
 
   if (!book) notFound();
 
@@ -112,6 +121,27 @@ export default async function BookDetailPage({
           <GroupBuyWidget groupBuy={groupBuy} bookId={book.id} isLoggedIn={!!profile} />
         )}
       </div>
+
+      {(shares ?? []).length > 0 && (
+        <div className="space-y-3 md:col-span-2">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold">讀者分享</h2>
+            <Link
+              href={`/reading-shares?book=${book.id}`}
+              className="text-muted-foreground text-sm hover:underline"
+            >
+              查看全部／錄入分享 →
+            </Link>
+          </div>
+          {(shares ?? []).map((share) => (
+            <ReadingShareCard
+              key={share.id}
+              share={{ ...share, book_title: book.title }}
+              showModeration={isStaffRole(profile?.role)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

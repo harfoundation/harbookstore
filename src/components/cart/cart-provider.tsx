@@ -43,7 +43,12 @@ function readItems(): CartItem[] {
 
 function writeItems(items: CartItem[]) {
   cachedItems = items;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // Storage blocked (e.g. Safari with tracking prevention) — cart still
+    // works for this session via cachedItems, just doesn't persist.
+  }
   listeners.forEach((listener) => listener());
 }
 

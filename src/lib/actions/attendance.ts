@@ -26,6 +26,7 @@ export async function upsertCongregation(
   const supabase = await createClient();
   const v = parsed.data;
   const row = {
+    church_id: v.churchId,
     name: v.name,
     service_period: v.servicePeriod,
     sort_order: v.sortOrder,
@@ -40,6 +41,7 @@ export async function upsertCongregation(
 
   revalidatePath("/admin/congregations");
   revalidatePath("/admin/check-in");
+  revalidatePath("/admin/churches");
   return { success: true };
 }
 

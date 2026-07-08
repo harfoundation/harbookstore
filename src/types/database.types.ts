@@ -437,6 +437,273 @@ export type Database = {
         }
         Relationships: []
       }
+      church_announcements: {
+        Row: {
+          body_markdown: string
+          church_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          published_at: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body_markdown: string
+          church_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body_markdown?: string
+          church_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          published_at?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_announcements_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_announcements_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_announcements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      church_registrations: {
+        Row: {
+          church_id: string
+          congregation_id: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          message: string | null
+          phone: string | null
+          registration_type: string
+          status: string
+        }
+        Insert: {
+          church_id: string
+          congregation_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          message?: string | null
+          phone?: string | null
+          registration_type: string
+          status?: string
+        }
+        Update: {
+          church_id?: string
+          congregation_id?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          message?: string | null
+          phone?: string | null
+          registration_type?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_registrations_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_registrations_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_registrations_congregation_id_fkey"
+            columns: ["congregation_id"]
+            isOneToOne: false
+            referencedRelation: "congregations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      church_services: {
+        Row: {
+          church_id: string
+          created_at: string
+          day_of_week: number | null
+          description: string | null
+          id: string
+          is_active: boolean
+          language: string | null
+          name_zh: string
+          schedule_label: string
+          sort_order: number
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          day_of_week?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          language?: string | null
+          name_zh: string
+          schedule_label: string
+          sort_order?: number
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          day_of_week?: number | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          language?: string | null
+          name_zh?: string
+          schedule_label?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_services_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_services_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      church_staff: {
+        Row: {
+          church_id: string
+          created_at: string
+          id: string
+          profile_id: string
+          role: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          id?: string
+          profile_id: string
+          role?: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          id?: string
+          profile_id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "church_staff_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_staff_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_staff_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      churches: {
+        Row: {
+          billing_notes: string | null
+          billing_plan_cents: number | null
+          billing_status: string
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          name_en: string | null
+          name_zh: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          billing_notes?: string | null
+          billing_plan_cents?: number | null
+          billing_status?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_en?: string | null
+          name_zh: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          billing_notes?: string | null
+          billing_plan_cents?: number | null
+          billing_status?: string
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          name_en?: string | null
+          name_zh?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       congregation_members: {
         Row: {
           congregation_id: string
@@ -480,6 +747,7 @@ export type Database = {
       }
       congregations: {
         Row: {
+          church_id: string
           created_at: string
           id: string
           is_active: boolean
@@ -488,6 +756,7 @@ export type Database = {
           sort_order: number
         }
         Insert: {
+          church_id: string
           created_at?: string
           id?: string
           is_active?: boolean
@@ -496,6 +765,7 @@ export type Database = {
           sort_order?: number
         }
         Update: {
+          church_id?: string
           created_at?: string
           id?: string
           is_active?: boolean
@@ -503,7 +773,22 @@ export type Database = {
           service_period?: string
           sort_order?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "congregations_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "congregations_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_progress: {
         Row: {
@@ -1267,6 +1552,54 @@ export type Database = {
           },
         ]
       }
+      reading_shares: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          is_hidden: boolean
+          quote_text: string
+          shared_by_name: string | null
+          source_group: string | null
+          submitted_by: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          quote_text: string
+          shared_by_name?: string | null
+          source_group?: string | null
+          submitted_by: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          quote_text?: string
+          shared_by_name?: string | null
+          source_group?: string | null
+          submitted_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reading_shares_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_shares_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       secondhand_items: {
         Row: {
           author: string | null
@@ -1416,6 +1749,113 @@ export type Database = {
           },
         ]
       }
+      service_material_songs: {
+        Row: {
+          service_material_id: string
+          sort_order: number
+          worship_song_id: string
+        }
+        Insert: {
+          service_material_id: string
+          sort_order?: number
+          worship_song_id: string
+        }
+        Update: {
+          service_material_id?: string
+          sort_order?: number
+          worship_song_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_material_songs_service_material_id_fkey"
+            columns: ["service_material_id"]
+            isOneToOne: false
+            referencedRelation: "service_materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_material_songs_worship_song_id_fkey"
+            columns: ["worship_song_id"]
+            isOneToOne: false
+            referencedRelation: "worship_songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_materials: {
+        Row: {
+          church_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          sermon_ppt_url: string | null
+          sermon_speaker: string | null
+          sermon_title: string | null
+          service_date: string
+          service_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          sermon_ppt_url?: string | null
+          sermon_speaker?: string | null
+          sermon_title?: string | null
+          service_date: string
+          service_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          sermon_ppt_url?: string | null
+          sermon_speaker?: string | null
+          sermon_title?: string | null
+          service_date?: string
+          service_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_materials_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_materials_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_materials_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_materials_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "church_services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_applications: {
         Row: {
           admin_notes: string | null
@@ -1559,6 +1999,48 @@ export type Database = {
           },
         ]
       }
+      worship_songs: {
+        Row: {
+          church_id: string
+          created_at: string
+          file_url: string | null
+          id: string
+          lyrics_markdown: string | null
+          title: string
+        }
+        Insert: {
+          church_id: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          lyrics_markdown?: string | null
+          title: string
+        }
+        Update: {
+          church_id?: string
+          created_at?: string
+          file_url?: string | null
+          id?: string
+          lyrics_markdown?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worship_songs_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "churches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "worship_songs_church_id_fkey"
+            columns: ["church_id"]
+            isOneToOne: false
+            referencedRelation: "public_church_directory"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       public_answered_questions: {
@@ -1585,9 +2067,34 @@ export type Database = {
         }
         Relationships: []
       }
+      public_church_directory: {
+        Row: {
+          id: string | null
+          name_en: string | null
+          name_zh: string | null
+          slug: string | null
+        }
+        Insert: {
+          id?: string | null
+          name_en?: string | null
+          name_zh?: string | null
+          slug?: string | null
+        }
+        Update: {
+          id?: string | null
+          name_en?: string | null
+          name_zh?: string | null
+          slug?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: { Args: { uid: string }; Returns: boolean }
+      is_church_staff: {
+        Args: { target_church_id: string; uid: string }
+        Returns: boolean
+      }
       is_partner: { Args: { uid: string }; Returns: boolean }
       is_staff: { Args: { uid: string }; Returns: boolean }
     }

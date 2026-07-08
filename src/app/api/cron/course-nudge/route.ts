@@ -5,7 +5,7 @@ import { CourseNudgeEmail } from "@/lib/email/templates/course-nudge";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 const FROM =
-  process.env.RESEND_FROM_EMAIL ?? "山書房 Har Bookstore <no-reply@harfoundation.org.au>";
+  process.env.RESEND_FROM_EMAIL ?? "山書坊 Har Book Club <no-reply@harfoundation.org.au>";
 
 /**
  * Weekly course-progress nudge. Triggered by Vercel Cron (see vercel.json) —
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
     await resend.emails.send({
       from: FROM,
       to,
-      subject: "還在等您回來 — 山書房課程陪伴提醒",
+      subject: "還在等您回來 — 山書坊課程陪伴提醒",
       react: CourseNudgeEmail({ lessonTitle: lesson?.title ?? "您的課程" }),
     });
     sent++;

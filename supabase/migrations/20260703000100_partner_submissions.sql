@@ -1,5 +1,5 @@
 -- Service partners (external publishers/ministries) can submit books and
--- courses for Har Bookstore admin review before they go live.
+-- courses for Har Book Club admin review before they go live.
 
 alter table public.profiles
   drop constraint profiles_role_check,

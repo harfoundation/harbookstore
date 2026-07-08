@@ -21,7 +21,7 @@ export default async function EventsPage() {
       <div>
         <h1 className="text-2xl font-bold">活動公告</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          山書房與 Har Foundation 近期活動。
+          山書坊與 Har Foundation 近期活動。
         </p>
       </div>
 

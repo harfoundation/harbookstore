@@ -2,7 +2,7 @@ import Image from "next/image";
 import { getWhatsappLink } from "@/lib/whatsapp";
 
 export function SiteFooter() {
-  const whatsappLink = getWhatsappLink("您好，我想了解山書房的相關資訊。");
+  const whatsappLink = getWhatsappLink("您好，我想了解山書坊的相關資訊。");
 
   return (
     <footer className="border-border text-muted-foreground mt-16 border-t py-8 text-sm">
@@ -24,7 +24,7 @@ export function SiteFooter() {
 
         <div className="space-y-1">
           <p>
-            山書房 Har Bookstore — 由 HAR Cultural Foundation Ltd（HAR
+            山書坊 Har Book Club — 由 HAR Cultural Foundation Ltd（HAR
             文化基金有限公司）主辦
           </p>
           <p>

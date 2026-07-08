@@ -27,7 +27,7 @@ export function BookingRespondedEmail({
     <Html>
       <Head />
       <Preview>
-        山書房預約{statusLabel} — {serviceName}
+        山書坊預約{statusLabel} — {serviceName}
       </Preview>
       <Body
         style={{ fontFamily: "sans-serif", backgroundColor: "#f6f6f6", padding: "24px" }}
@@ -41,9 +41,9 @@ export function BookingRespondedEmail({
             希望日期：{preferredDate}
             {preferredTime ? `　時段：${preferredTime}` : ""}
           </Text>
-          {adminReplyMessage && <Text>山書房回覆：{adminReplyMessage}</Text>}
+          {adminReplyMessage && <Text>山書坊回覆：{adminReplyMessage}</Text>}
           <Text>如有任何問題，歡迎隨時聯絡我們。</Text>
-          <Text>山書房 Har Bookstore 敬上</Text>
+          <Text>山書坊 Har Book Club 敬上</Text>
         </Container>
       </Body>
     </Html>

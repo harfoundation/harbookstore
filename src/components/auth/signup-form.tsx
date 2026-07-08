@@ -37,7 +37,7 @@ export function SignupForm() {
       return;
     }
 
-    toast.success("註冊成功，歡迎加入山書房！");
+    toast.success("註冊成功，歡迎加入山書坊！");
     router.push("/");
     router.refresh();
   }
@@ -54,7 +54,7 @@ export function SignupForm() {
     <div className="mx-auto max-w-sm space-y-6">
       <div className="space-y-1 text-center">
         <h1 className="text-2xl font-bold">註冊</h1>
-        <p className="text-muted-foreground text-sm">加入山書房，開始您的閱讀旅程</p>
+        <p className="text-muted-foreground text-sm">加入山書坊，開始您的閱讀旅程</p>
       </div>
 
       <Button

@@ -26,13 +26,25 @@ let cachedLocale: Locale | null = null;
 
 function readLocale(): Locale {
   if (cachedLocale) return cachedLocale;
-  cachedLocale = localStorage.getItem(STORAGE_KEY) === "zh-Hans" ? "zh-Hans" : "zh-Hant";
+  try {
+    cachedLocale = localStorage.getItem(STORAGE_KEY) === "zh-Hans" ? "zh-Hans" : "zh-Hant";
+  } catch {
+    // Safari throws SecurityError instead of returning null when storage
+    // access is blocked (Private Browsing, "Prevent Cross-Site Tracking" in
+    // some contexts) — this runs in the root layout on every page, so an
+    // uncaught throw here takes down the whole app.
+    cachedLocale = "zh-Hant";
+  }
   return cachedLocale;
 }
 
 function writeLocale(next: Locale) {
   cachedLocale = next;
-  localStorage.setItem(STORAGE_KEY, next);
+  try {
+    localStorage.setItem(STORAGE_KEY, next);
+  } catch {
+    // Storage blocked — locale still switches for this session via cachedLocale.
+  }
   listeners.forEach((listener) => listener());
 }
 

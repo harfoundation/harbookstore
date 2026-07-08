@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const congregationFormSchema = z.object({
   id: z.string().uuid().optional(),
+  churchId: z.string().uuid(),
   name: z.string().min(1, "請輸入堂會名稱").max(100),
   servicePeriod: z.enum(["morning", "afternoon", "evening"]),
   sortOrder: z.number().int(),

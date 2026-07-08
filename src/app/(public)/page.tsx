@@ -2,11 +2,14 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const profile = await getCurrentProfile();
+  const isStaff = isStaffRole(profile?.role);
   const todayIso = new Date().toISOString().slice(0, 10);
   const [{ data: categories }, { data: upcomingEvents }] = await Promise.all([
     supabase
@@ -25,7 +28,19 @@ export default async function HomePage() {
   return (
     <div className="space-y-12">
       <section className="space-y-4 text-center">
-        <h1 className="text-3xl font-bold sm:text-4xl">山書房 Har Bookstore</h1>
+        {isStaff && (
+          <div className="flex justify-center">
+            <Link
+              href="/admin"
+              className="text-muted-foreground hover:text-foreground text-sm underline underline-offset-4"
+            >
+              前往管理後台 →
+            </Link>
+          </div>
+        )}
+        <h1 className="text-3xl font-bold sm:text-4xl">
+          山書坊 <span className="font-poppins">Har Book Club</span>
+        </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl text-balance">
           陪你回到耶穌，建立根基——培訓課程、書評專欄、團購贈書與免費借閱，
           一個以人為本的基督教書籍事工。

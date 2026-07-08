@@ -3,7 +3,7 @@ import { getWhatsappLink } from "@/lib/whatsapp";
 import { Button } from "@/components/ui/button";
 
 export async function WhatsappContactCard() {
-  const link = getWhatsappLink("您好，我想了解山書房的相關資訊。");
+  const link = getWhatsappLink("您好，我想了解山書坊的相關資訊。");
   if (!link) return null;
 
   const qrDataUrl = await QRCode.toDataURL(link, { margin: 1, width: 160 });

@@ -12,14 +12,21 @@ function todayIso() {
 export default async function CheckInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ congregationId?: string; date?: string }>;
+  searchParams: Promise<{ congregationId?: string; date?: string; church?: string }>;
 }) {
   const params = await searchParams;
   const supabase = await createClient();
 
+  const { data: churchRow } = await supabase
+    .from("churches")
+    .select("id")
+    .eq("slug", params.church ?? "wesley-boxhill")
+    .single();
+
   const { data: congregations } = await supabase
     .from("congregations")
     .select("id, name")
+    .eq("church_id", churchRow?.id ?? "")
     .eq("is_active", true)
     .order("sort_order");
 

@@ -3,9 +3,10 @@ import { redirect } from "next/navigation";
 import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
 
 const ADMIN_NAV = [
+  { href: "/admin/churches", label: "堂會服務（多堂會）" },
   { href: "/admin/events", label: "活動公告" },
   { href: "/admin/check-in", label: "主日人員登記" },
-  { href: "/admin/congregations", label: "堂會管理" },
+  { href: "/admin/congregations", label: "主日名冊管理" },
   { href: "/admin/books", label: "書籍" },
   { href: "/admin/orders", label: "訂單" },
   { href: "/admin/borrow-requests", label: "借閱申請" },

@@ -20,7 +20,7 @@ export function BookingSubmittedEmail({
   return (
     <Html>
       <Head />
-      <Preview>山書房預約已收到 — {serviceName}</Preview>
+      <Preview>山書坊預約已收到 — {serviceName}</Preview>
       <Body
         style={{ fontFamily: "sans-serif", backgroundColor: "#f6f6f6", padding: "24px" }}
       >
@@ -34,7 +34,7 @@ export function BookingSubmittedEmail({
             {preferredTime ? `　時段：${preferredTime}` : ""}
           </Text>
           <Text>我們會盡快確認您的預約，並以電郵回覆確認結果。</Text>
-          <Text>山書房 Har Bookstore 敬上</Text>
+          <Text>山書坊 Har Book Club 敬上</Text>
         </Container>
       </Body>
     </Html>

@@ -38,9 +38,11 @@ const PERIOD_LABELS: Record<string, string> = {
 };
 
 export function CongregationFormDialog({
+  churchId,
   congregation,
   trigger,
 }: {
+  churchId: string;
   congregation?: Congregation;
   trigger: React.ReactElement;
 }) {
@@ -50,13 +52,14 @@ export function CongregationFormDialog({
     congregation
       ? {
           id: congregation.id,
+          churchId,
           name: congregation.name,
           servicePeriod:
             congregation.service_period as CongregationFormInput["servicePeriod"],
           sortOrder: congregation.sort_order,
           isActive: congregation.is_active,
         }
-      : { name: "", servicePeriod: "morning", sortOrder: 0, isActive: true },
+      : { churchId, name: "", servicePeriod: "morning", sortOrder: 0, isActive: true },
   );
 
   async function handleSubmit() {

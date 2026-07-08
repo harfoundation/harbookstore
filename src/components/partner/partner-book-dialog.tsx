@@ -56,7 +56,7 @@ export function PartnerBookDialog({
       toast.error(result.error);
       return;
     }
-    toast.success("已提交書籍，等候山書房審核");
+    toast.success("已提交書籍，等候山書坊審核");
     setForm(EMPTY);
     setOpen(false);
   }

@@ -60,7 +60,7 @@ export function renderBookHtml(
   </div></section>`);
 
   sections.push(`<section class="page colophon"><div class="bottom-wrap">
-    <p>山書房 Har Bookstore</p>
+    <p>山書坊 Har Book Club</p>
     <p>由 HAR Cultural Foundation Ltd（HAR 文化基金有限公司）出版</p>
     <p>2–6 Oxford Street, (Wesley Uniting Church Box Hill), Box Hill, VIC Australia 3128</p>
   </div></section>`);
