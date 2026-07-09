@@ -28,6 +28,16 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  let isStaff = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    isStaff = !!profile && ["admin", "committee", "instructor"].includes(profile.role);
+  }
+
   if (request.nextUrl.pathname.startsWith("/admin")) {
     if (!user) {
       const url = request.nextUrl.clone();
@@ -35,20 +45,32 @@ export async function updateSession(request: NextRequest) {
       url.searchParams.set("next", request.nextUrl.pathname);
       return NextResponse.redirect(url);
     }
-
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    const isStaff =
-      profile && ["admin", "committee", "instructor"].includes(profile.role);
     if (!isStaff) {
       const url = request.nextUrl.clone();
-      url.pathname = "/";
+      url.pathname = "/articles/write";
+      url.search = "";
       return NextResponse.redirect(url);
     }
+    return supabaseResponse;
+  }
+
+  // Soft-launch gate: everything except a small allowlist is staff-only for
+  // now — non-staff visitors only see the login/signup flow and the book
+  // review writer sign-up page (the site's current public "front door").
+  // Remove this block once the rest of the site is ready to go fully public.
+  const PUBLIC_ALLOWED_PATHS = [
+    "/login",
+    "/signup",
+    "/articles/write",
+    "/auth/callback",
+    "/robots.txt",
+    "/sitemap.xml",
+  ];
+  if (!isStaff && !PUBLIC_ALLOWED_PATHS.includes(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/articles/write";
+    url.search = "";
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;
