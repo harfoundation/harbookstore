@@ -1856,6 +1856,56 @@ export type Database = {
           },
         ]
       }
+      settlement_resources: {
+        Row: {
+          body_markdown_en: string
+          body_markdown_zh: string
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          sort_order: number
+          status: string
+          title_en: string
+          title_zh: string
+          updated_at: string
+        }
+        Insert: {
+          body_markdown_en: string
+          body_markdown_zh: string
+          category: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sort_order?: number
+          status?: string
+          title_en: string
+          title_zh: string
+          updated_at?: string
+        }
+        Update: {
+          body_markdown_en?: string
+          body_markdown_zh?: string
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sort_order?: number
+          status?: string
+          title_en?: string
+          title_zh?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlement_resources_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       team_applications: {
         Row: {
           admin_notes: string | null

@@ -10,6 +10,11 @@ const SECTIONS = [
     label: "堂會服務（多堂會）",
     description: "多堂會每週聚會、敬拜詩歌、講道 PPT、報名與通知（含收費）",
   },
+  {
+    href: "/admin/settlement-resources",
+    label: "移民安家資源",
+    description: "買租房、創業、學習就業 — 中英雙語新移民資源",
+  },
   { href: "/admin/events", label: "活動公告", description: "發布/編輯活動公告" },
   { href: "/admin/check-in", label: "主日人員登記", description: "主日打卡、新朋友登記" },
   {

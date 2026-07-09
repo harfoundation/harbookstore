@@ -4,6 +4,7 @@ import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
 
 const ADMIN_NAV = [
   { href: "/admin/churches", label: "堂會服務（多堂會）" },
+  { href: "/admin/settlement-resources", label: "移民安家資源" },
   { href: "/admin/events", label: "活動公告" },
   { href: "/admin/check-in", label: "主日人員登記" },
   { href: "/admin/congregations", label: "主日名冊管理" },
