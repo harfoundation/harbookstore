@@ -8,11 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { submitTeamApplication } from "@/lib/actions/team-applications";
 
-export function BookReviewWriterForm() {
-  const [fullName, setFullName] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
+export function BookReviewWriterForm({
+  books,
+  defaultName = "",
+  defaultEmail = "",
+}: {
+  books: { id: string; title: string }[];
+  defaultName?: string;
+  defaultEmail?: string;
+}) {
+  const [fullName, setFullName] = useState(defaultName);
+  const [contactEmail, setContactEmail] = useState(defaultEmail);
   const [contactPhone, setContactPhone] = useState("");
-  const [roleInterest, setRoleInterest] = useState("");
+  const [selectedBookIds, setSelectedBookIds] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -28,18 +36,28 @@ export function BookReviewWriterForm() {
     );
   }
 
+  function toggleBook(id: string) {
+    setSelectedBookIds((prev) =>
+      prev.includes(id) ? prev.filter((b) => b !== id) : [...prev, id],
+    );
+  }
+
   async function handleSubmit() {
     if (!fullName.trim() || !contactEmail.trim()) {
       toast.error("請填寫姓名與電郵");
       return;
     }
     setSubmitting(true);
+    const selectedTitles = books
+      .filter((b) => selectedBookIds.includes(b.id))
+      .map((b) => b.title)
+      .join("、");
     const result = await submitTeamApplication({
       fullName,
       contactEmail,
       contactPhone: contactPhone || undefined,
       applicationType: "book_review_writer",
-      roleInterest: roleInterest || undefined,
+      roleInterest: selectedTitles || undefined,
       message: message || undefined,
     });
     setSubmitting(false);
@@ -71,12 +89,23 @@ export function BookReviewWriterForm() {
         </div>
       </div>
       <div className="space-y-1.5">
-        <Label>有興趣評論的書籍／範疇（選填）</Label>
-        <Input
-          value={roleInterest}
-          onChange={(e) => setRoleInterest(e.target.value)}
-          placeholder="例如：起步類、職場信仰類，或指定書名"
-        />
+        <Label>有興趣評論的書籍（可複選，選填）</Label>
+        {books.length === 0 ? (
+          <p className="text-muted-foreground text-sm">目前暫無書目可供選擇。</p>
+        ) : (
+          <div className="max-h-48 space-y-1 overflow-y-auto rounded-md border p-3">
+            {books.map((book) => (
+              <label key={book.id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedBookIds.includes(book.id)}
+                  onChange={() => toggleBook(book.id)}
+                />
+                {book.title}
+              </label>
+            ))}
+          </div>
+        )}
       </div>
       <div className="space-y-1.5">
         <Label>寫作經驗 / 想對書評委員會說的話（選填）</Label>

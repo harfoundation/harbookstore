@@ -63,11 +63,11 @@ export function SiteHeader({
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
-            src="/brand/har-foundation-logo.png"
+            src="/brand/har-foundation-favicon.png"
             alt="Har Foundation"
-            width={178}
-            height={24}
-            className="h-6 w-auto"
+            width={32}
+            height={32}
+            className="h-7 w-7 rounded"
             priority
           />
           <span className="text-lg font-bold whitespace-nowrap">

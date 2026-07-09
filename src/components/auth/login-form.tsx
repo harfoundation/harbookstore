@@ -98,7 +98,14 @@ export function LoginForm() {
 
       <p className="text-muted-foreground text-center text-sm">
         還沒有帳戶？{" "}
-        <Link href="/signup" className="text-foreground underline underline-offset-4">
+        <Link
+          href={
+            searchParams.get("next")
+              ? `/signup?next=${encodeURIComponent(searchParams.get("next")!)}`
+              : "/signup"
+          }
+          className="text-foreground underline underline-offset-4"
+        >
           立即註冊
         </Link>
       </p>

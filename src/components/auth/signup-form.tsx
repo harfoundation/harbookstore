@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import { signupSchema, type SignupInput } from "@/lib/validation/auth.schema";
 
 export function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [submitting, setSubmitting] = useState(false);
 
   const {
@@ -38,15 +39,18 @@ export function SignupForm() {
     }
 
     toast.success("註冊成功，歡迎加入山書坊！");
-    router.push("/");
+    router.push(searchParams.get("next") ?? "/");
     router.refresh();
   }
 
   async function handleGoogleSignup() {
     const supabase = createClient();
+    const next = searchParams.get("next");
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback${next ? `?next=${encodeURIComponent(next)}` : ""}`,
+      },
     });
   }
 
@@ -109,7 +113,14 @@ export function SignupForm() {
 
       <p className="text-muted-foreground text-center text-sm">
         已經有帳戶？{" "}
-        <Link href="/login" className="text-foreground underline underline-offset-4">
+        <Link
+          href={
+            searchParams.get("next")
+              ? `/login?next=${encodeURIComponent(searchParams.get("next")!)}`
+              : "/login"
+          }
+          className="text-foreground underline underline-offset-4"
+        >
           登入
         </Link>
       </p>

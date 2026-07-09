@@ -1,10 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { getCurrentProfile } from "@/lib/auth/get-current-profile";
+import { Button } from "@/components/ui/button";
 import { BookReviewWriterForm } from "@/components/articles/book-review-writer-form";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "書評寫作邀請" };
 
-export default function BookReviewWritePage() {
+export default async function BookReviewWritePage() {
+  const profile = await getCurrentProfile();
+  const supabase = await createClient();
+  const { data: books } = await supabase
+    .from("books")
+    .select("id, title")
+    .eq("is_active", true)
+    .order("poster_number");
+
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div>
@@ -54,7 +66,26 @@ export default function BookReviewWritePage() {
         </p>
       </div>
 
-      <BookReviewWriterForm />
+      {profile ? (
+        <BookReviewWriterForm
+          books={books ?? []}
+          defaultName={profile.displayName ?? ""}
+          defaultEmail={profile.email ?? ""}
+        />
+      ) : (
+        <div className="space-y-3 rounded-lg border p-6 text-center">
+          <p className="font-medium">請先註冊或登入帳號</p>
+          <p className="text-muted-foreground text-sm">
+            這樣書評委員會日後才能透過您的帳號與您聯繫、追蹤投稿進度。
+          </p>
+          <div className="flex justify-center gap-2 pt-1">
+            <Button render={<Link href="/signup?next=/articles/write" />}>立即註冊</Button>
+            <Button variant="outline" render={<Link href="/login?next=/articles/write" />}>
+              登入
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
