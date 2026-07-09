@@ -55,21 +55,26 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Soft-launch gate: everything except a small allowlist is staff-only for
-  // now — non-staff visitors only see the login/signup flow and the book
-  // review writer sign-up page (the site's current public "front door").
+  // now — non-staff visitors only see the login/signup flow and the handful
+  // of pages surfaced in the header nav for them (see PUBLIC_NAV_HREFS in
+  // site-header.tsx, which must stay in sync with this list).
   // Remove this block once the rest of the site is ready to go fully public.
   const PUBLIC_ALLOWED_PATHS = [
     "/login",
     "/signup",
-    "/articles/write",
     "/settle",
     "/branches",
     "/join",
+    "/reading-shares",
     "/auth/callback",
     "/robots.txt",
     "/sitemap.xml",
   ];
-  if (!isStaff && !PUBLIC_ALLOWED_PATHS.includes(request.nextUrl.pathname)) {
+  const PUBLIC_ALLOWED_PREFIXES = ["/articles"];
+  const isPublicPath =
+    PUBLIC_ALLOWED_PATHS.includes(request.nextUrl.pathname) ||
+    PUBLIC_ALLOWED_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix));
+  if (!isStaff && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/articles/write";
     url.search = "";

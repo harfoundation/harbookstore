@@ -32,6 +32,11 @@ const NAV_LINKS = [
   { href: "/join", label: "加入我們" },
 ];
 
+// Soft-launch gate: non-staff visitors only see the pages that are actually
+// open to them (kept in sync with PUBLIC_ALLOWED_PATHS/PREFIXES in
+// src/lib/supabase/middleware.ts) — no point showing a link that redirects.
+const PUBLIC_NAV_HREFS = new Set(["/settle", "/articles", "/reading-shares", "/branches", "/join"]);
+
 export function SiteHeader({
   user,
   isStaff,
@@ -43,6 +48,7 @@ export function SiteHeader({
 }) {
   const pathname = usePathname();
   const { itemCount } = useCart();
+  const navLinks = isStaff ? NAV_LINKS : NAV_LINKS.filter((link) => PUBLIC_NAV_HREFS.has(link.href));
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -79,7 +85,7 @@ export function SiteHeader({
         </Link>
 
         <nav className="flex flex-wrap items-center gap-4 text-sm">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
