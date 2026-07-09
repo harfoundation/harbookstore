@@ -9,6 +9,7 @@ export const metadata: Metadata = { title: "同工/志工申請" };
 const TYPE_LABEL: Record<string, string> = {
   volunteer: "志工／義工",
   paid_staff: "受薪同工",
+  book_review_writer: "書評寫作",
 };
 
 export default async function AdminApplicationsPage() {
