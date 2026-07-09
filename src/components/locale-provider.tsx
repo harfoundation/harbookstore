@@ -9,8 +9,9 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { toSimplified } from "@/lib/i18n/opencc-converter";
+import { setGoogleTranslateLanguage } from "@/lib/i18n/google-translate";
 
-export type Locale = "zh-Hant" | "zh-Hans";
+export type Locale = "zh-Hant" | "zh-Hans" | "en";
 const STORAGE_KEY = "harbookstore:locale";
 
 const LocaleContext = createContext<{
@@ -27,7 +28,8 @@ let cachedLocale: Locale | null = null;
 function readLocale(): Locale {
   if (cachedLocale) return cachedLocale;
   try {
-    cachedLocale = localStorage.getItem(STORAGE_KEY) === "zh-Hans" ? "zh-Hans" : "zh-Hant";
+    const stored = localStorage.getItem(STORAGE_KEY);
+    cachedLocale = stored === "zh-Hans" || stored === "en" ? stored : "zh-Hant";
   } catch {
     // Safari throws SecurityError instead of returning null when storage
     // access is blocked (Private Browsing, "Prevent Cross-Site Tracking" in
@@ -107,8 +109,30 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect();
   }, [locale, pathname]);
 
+  useEffect(() => {
+    // Google Translate doesn't rescan the DOM on Next.js client-side
+    // navigations — re-trigger it whenever the route changes while "en" is
+    // the active locale so newly rendered pages get translated too.
+    if (locale === "en") setGoogleTranslateLanguage("en");
+  }, [locale, pathname]);
+
   const setLocale = useCallback((next: Locale) => {
+    const prev = cachedLocale;
     writeLocale(next);
+
+    if (next === "en") {
+      setGoogleTranslateLanguage("en");
+      return;
+    }
+
+    if (prev === "en") {
+      // Leaving English — clear Google Translate's cookie and reload for a
+      // clean, unconverted render rather than trying to undo its DOM rewrite.
+      document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      window.location.reload();
+      return;
+    }
+
     if (next === "zh-Hant") {
       // Traditional is the source text — reload for a clean, unconverted render
       // rather than attempting a lossy reverse (Simplified→Traditional) conversion.

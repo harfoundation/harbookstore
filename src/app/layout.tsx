@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_TC, Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { LocaleProvider } from "@/components/locale-provider";
+import { GoogleTranslateWidget } from "@/components/google-translate-widget";
 import "./globals.css";
 
 const notoSansTC = Noto_Sans_TC({
@@ -38,6 +39,7 @@ export default function RootLayout({
       className={`${notoSansTC.variable} ${poppins.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
+        <GoogleTranslateWidget />
         <LocaleProvider>
           {children}
           <Toaster richColors position="top-center" />

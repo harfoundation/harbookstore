@@ -38,7 +38,10 @@ export default async function HomePage() {
             </Link>
           </div>
         )}
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
+        <h1
+          className="notranslate text-5xl font-extrabold tracking-tight sm:text-6xl"
+          translate="no"
+        >
           山書坊 <span className="font-poppins">Har Book Club</span>
         </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl text-balance text-lg">

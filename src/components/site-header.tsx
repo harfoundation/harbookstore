@@ -70,7 +70,7 @@ export function SiteHeader({
             className="h-7 w-7 rounded"
             priority
           />
-          <span className="text-lg font-bold whitespace-nowrap">
+          <span className="notranslate text-lg font-bold whitespace-nowrap" translate="no">
             山書坊{" "}
             <span className="font-poppins text-muted-foreground hidden text-sm font-medium sm:inline">
               Har Book Club

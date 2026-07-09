@@ -131,3 +131,26 @@
     @apply font-sans;
   }
 }
+
+/* Google Website Translator: used only as a hidden translation engine (see
+   GoogleTranslateWidget) — suppress every bit of its own UI chrome. Google's
+   injected class names are obfuscated and change across versions, so target
+   by the stable "skiptranslate" marker it applies to all of its own iframes
+   rather than any specific generated class. */
+iframe.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+}
+body {
+  top: 0 !important;
+  position: static !important;
+}
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}

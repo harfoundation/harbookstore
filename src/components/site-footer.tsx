@@ -24,8 +24,10 @@ export function SiteFooter() {
 
         <div className="space-y-1">
           <p>
-            山書坊 Har Book Club — 由 HAR Cultural Foundation Ltd（HAR
-            文化基金有限公司）主辦
+            <span className="notranslate" translate="no">
+              山書坊 Har Book Club
+            </span>{" "}
+            — 由 HAR Cultural Foundation Ltd（HAR 文化基金有限公司）主辦
           </p>
           <p>
             2–6 Oxford Street, (Wesley Uniting Church Box Hill), Box Hill, VIC Australia

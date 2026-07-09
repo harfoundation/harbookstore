@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
+import { LocaleToggle } from "@/components/locale-toggle";
 
 const ADMIN_NAV = [
   { href: "/admin/churches", label: "堂會服務（多堂會）" },
@@ -33,7 +34,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <p className="text-muted-foreground mb-2 hidden text-xs font-semibold tracking-wide uppercase sm:block">
           管理後台
         </p>
-        <nav className="flex gap-1 overflow-x-auto text-sm sm:flex-col sm:overflow-visible">
+        <LocaleToggle />
+        <nav className="mt-2 flex gap-1 overflow-x-auto text-sm sm:flex-col sm:overflow-visible">
           {ADMIN_NAV.map((item) => (
             <Link
               key={item.href}
