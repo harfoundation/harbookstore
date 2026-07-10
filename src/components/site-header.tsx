@@ -17,7 +17,7 @@ import { LocaleToggle } from "@/components/locale-toggle";
 import { toast } from "sonner";
 
 const NAV_LINKS = [
-  { href: "/settle", label: "留學和移民" },
+  { href: "/settle", label: "移民安家" },
   { href: "/events", label: "活動公告" },
   { href: "/catalog", label: "書目" },
   { href: "/courses", label: "課程" },
