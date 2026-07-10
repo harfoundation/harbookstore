@@ -17,7 +17,7 @@ import { LocaleToggle } from "@/components/locale-toggle";
 import { toast } from "sonner";
 
 const NAV_LINKS = [
-  { href: "/settle", label: "移民安家" },
+  { href: "/settle", label: "留學和移民" },
   { href: "/events", label: "活動公告" },
   { href: "/catalog", label: "書目" },
   { href: "/courses", label: "課程" },
@@ -35,7 +35,7 @@ const NAV_LINKS = [
 // Soft-launch gate: non-staff visitors only see the pages that are actually
 // open to them (kept in sync with PUBLIC_ALLOWED_PATHS/PREFIXES in
 // src/lib/supabase/middleware.ts) — no point showing a link that redirects.
-const PUBLIC_NAV_HREFS = new Set(["/articles", "/reading-shares", "/branches", "/join"]);
+const PUBLIC_NAV_HREFS = new Set(["/settle", "/articles", "/reading-shares", "/branches", "/join"]);
 
 export function SiteHeader({
   user,
