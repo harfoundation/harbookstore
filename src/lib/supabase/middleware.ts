@@ -62,7 +62,6 @@ export async function updateSession(request: NextRequest) {
   const PUBLIC_ALLOWED_PATHS = [
     "/login",
     "/signup",
-    "/settle",
     "/branches",
     "/join",
     "/reading-shares",

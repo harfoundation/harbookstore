@@ -102,9 +102,11 @@ export function SiteHeader({
 
         <div className="ml-auto flex items-center gap-2">
           <LocaleToggle />
-          <Button render={<Link href="/cart" />} variant="ghost" size="sm">
-            購物車{itemCount > 0 ? ` (${itemCount})` : ""}
-          </Button>
+          {isStaff && (
+            <Button render={<Link href="/cart" />} variant="ghost" size="sm">
+              購物車{itemCount > 0 ? ` (${itemCount})` : ""}
+            </Button>
+          )}
 
           {user ? (
             <DropdownMenu>
