@@ -21,7 +21,7 @@ export default async function CatalogPage({
       let query = supabase
         .from("books")
         .select(
-          "id, title, author, price_cents, group_buy_price_cents, procurement_status, poster_number, category_id",
+          "id, title, author, price_cents, group_buy_price_cents, procurement_status, poster_number, category_id, cover_image_url",
         )
         .eq("is_active", true)
         .order("poster_number");

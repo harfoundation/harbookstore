@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-current-profile";
@@ -69,8 +70,19 @@ export default async function BookDetailPage({
 
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      <div className="bg-muted flex aspect-[3/4] items-center justify-center rounded-lg">
-        <span className="text-muted-foreground text-sm">尚無封面圖片</span>
+      <div className="bg-muted flex aspect-[3/4] items-center justify-center overflow-hidden rounded-lg">
+        {book.cover_image_url ? (
+          <Image
+            src={book.cover_image_url}
+            alt={book.title}
+            width={400}
+            height={533}
+            className="h-full w-full object-cover"
+            priority
+          />
+        ) : (
+          <span className="text-muted-foreground text-sm">尚無封面圖片</span>
+        )}
       </div>
 
       <div className="space-y-4">

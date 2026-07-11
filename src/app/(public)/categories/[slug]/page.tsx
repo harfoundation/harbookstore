@@ -22,7 +22,9 @@ export default async function CategoryPage({
 
   const { data: books } = await supabase
     .from("books")
-    .select("id, title, author, price_cents, group_buy_price_cents, procurement_status, poster_number")
+    .select(
+      "id, title, author, price_cents, group_buy_price_cents, procurement_status, poster_number, cover_image_url",
+    )
     .eq("category_id", category.id)
     .eq("is_active", true)
     .order("poster_number");

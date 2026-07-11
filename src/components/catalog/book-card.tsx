@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -20,11 +21,25 @@ export function BookCard({
     group_buy_price_cents: number | null;
     procurement_status: string;
     poster_number: number | null;
+    cover_image_url?: string | null;
   };
 }) {
   return (
     <Link href={`/catalog/${book.id}`}>
       <Card className="h-full transition-shadow hover:shadow-md">
+        <div className="bg-muted flex aspect-[3/4] items-center justify-center overflow-hidden rounded-t-xl">
+          {book.cover_image_url ? (
+            <Image
+              src={book.cover_image_url}
+              alt={book.title}
+              width={200}
+              height={267}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-muted-foreground text-xs">尚無封面圖片</span>
+          )}
+        </div>
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
             <CardTitle className="text-base leading-snug">{book.title}</CardTitle>
