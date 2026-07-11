@@ -24,6 +24,8 @@ const APPROVAL_LABEL: Record<string, string> = {
   rejected: "已拒絕",
 };
 
+const LOW_STOCK_THRESHOLD = 5;
+
 export default async function AdminBooksPage() {
   const supabase = await createClient();
   const [{ data: books }, { data: categories }] = await Promise.all([
@@ -36,6 +38,10 @@ export default async function AdminBooksPage() {
     supabase.from("book_categories").select("id, name_zh").order("sort_order"),
   ]);
 
+  const lowStockBooks = (books ?? []).filter(
+    (b) => b.is_active && b.stock_qty <= LOW_STOCK_THRESHOLD,
+  );
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -46,6 +52,19 @@ export default async function AdminBooksPage() {
         />
       </div>
 
+      {lowStockBooks.length > 0 && (
+        <div className="border-destructive/30 bg-destructive/5 rounded-lg border p-3 text-sm">
+          <p className="text-destructive font-medium">
+            {lowStockBooks.length} 本書庫存偏低（≤{LOW_STOCK_THRESHOLD} 本），可能需要再訂：
+          </p>
+          <p className="text-muted-foreground mt-1">
+            {lowStockBooks
+              .map((b) => `${b.title}（${b.stock_qty}）`)
+              .join("、")}
+          </p>
+        </div>
+      )}
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -53,6 +72,7 @@ export default async function AdminBooksPage() {
             <TableHead>書名</TableHead>
             <TableHead>作者</TableHead>
             <TableHead>價格</TableHead>
+            <TableHead>庫存</TableHead>
             <TableHead>提交者</TableHead>
             <TableHead>審核狀態</TableHead>
             <TableHead>上架</TableHead>
@@ -64,6 +84,7 @@ export default async function AdminBooksPage() {
             const submitter = book.profiles as unknown as {
               display_name: string | null;
             } | null;
+            const isLowStock = book.is_active && book.stock_qty <= LOW_STOCK_THRESHOLD;
             return (
               <TableRow key={book.id}>
                 <TableCell>{book.poster_number ?? "—"}</TableCell>
@@ -73,6 +94,11 @@ export default async function AdminBooksPage() {
                   {book.price_cents != null
                     ? `$${(book.price_cents / 100).toFixed(2)}`
                     : "—"}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={isLowStock ? "destructive" : "outline"}>
+                    {book.stock_qty}
+                  </Badge>
                 </TableCell>
                 <TableCell>{submitter?.display_name ?? "（管理員）"}</TableCell>
                 <TableCell>
