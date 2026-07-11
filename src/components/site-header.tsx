@@ -35,7 +35,14 @@ const NAV_LINKS = [
 // Soft-launch gate: non-staff visitors only see the pages that are actually
 // open to them (kept in sync with PUBLIC_ALLOWED_PATHS/PREFIXES in
 // src/lib/supabase/middleware.ts) — no point showing a link that redirects.
-const PUBLIC_NAV_HREFS = new Set(["/settle", "/articles", "/reading-shares", "/branches", "/join"]);
+const PUBLIC_NAV_HREFS = new Set([
+  "/settle",
+  "/catalog",
+  "/articles",
+  "/reading-shares",
+  "/branches",
+  "/join",
+]);
 
 export function SiteHeader({
   user,
@@ -102,11 +109,9 @@ export function SiteHeader({
 
         <div className="ml-auto flex items-center gap-2">
           <LocaleToggle />
-          {isStaff && (
-            <Button render={<Link href="/cart" />} variant="ghost" size="sm">
-              購物車{itemCount > 0 ? ` (${itemCount})` : ""}
-            </Button>
-          )}
+          <Button render={<Link href="/cart" />} variant="ghost" size="sm">
+            購物車{itemCount > 0 ? ` (${itemCount})` : ""}
+          </Button>
 
           {user ? (
             <DropdownMenu>

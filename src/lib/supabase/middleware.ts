@@ -66,11 +66,13 @@ export async function updateSession(request: NextRequest) {
     "/branches",
     "/join",
     "/reading-shares",
+    "/cart",
+    "/checkout",
     "/auth/callback",
     "/robots.txt",
     "/sitemap.xml",
   ];
-  const PUBLIC_ALLOWED_PREFIXES = ["/articles"];
+  const PUBLIC_ALLOWED_PREFIXES = ["/articles", "/catalog", "/categories"];
   const isPublicPath =
     PUBLIC_ALLOWED_PATHS.includes(request.nextUrl.pathname) ||
     PUBLIC_ALLOWED_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix));
