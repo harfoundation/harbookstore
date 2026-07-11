@@ -8,8 +8,24 @@ export type CartItem = {
   author: string | null;
   coverImageUrl: string | null;
   priceCents: number | null;
+  groupBuyPriceCents: number | null;
+  groupBuyMinQty: number | null;
   quantity: number;
 };
+
+// Mirrors the server-side rule in src/lib/actions/orders.ts
+// (resolveUnitPriceCents) — this is a display preview only, the server
+// always recomputes the real price at order time.
+export function effectiveUnitPriceCents(item: CartItem): number {
+  if (
+    item.groupBuyPriceCents != null &&
+    item.groupBuyMinQty != null &&
+    item.quantity >= item.groupBuyMinQty
+  ) {
+    return item.groupBuyPriceCents;
+  }
+  return item.priceCents ?? 0;
+}
 
 type CartContextValue = {
   items: CartItem[];
@@ -65,7 +81,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
     const subtotalCents = items.reduce(
-      (sum, i) => sum + i.quantity * (i.priceCents ?? 0),
+      (sum, i) => sum + i.quantity * effectiveUnitPriceCents(i),
       0,
     );
 

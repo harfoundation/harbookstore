@@ -9,7 +9,7 @@ import type { TablesUpdate } from "@/types/database.types";
 
 const retailItemSchema = z.object({
   bookId: z.string().uuid(),
-  quantity: z.number().int().min(1).max(20),
+  quantity: z.number().int().min(1).max(200),
 });
 
 const retailOrderSchema = z.object({
@@ -21,7 +21,7 @@ const retailOrderSchema = z.object({
 
 const giftOrderSchema = z.object({
   bookId: z.string().uuid(),
-  quantity: z.number().int().min(1).max(10),
+  quantity: z.number().int().min(1).max(200),
   paymentMethod: z.enum(["bank_transfer", "in_person"]),
   recipientName: z.string().min(1).max(100),
   recipientEmail: z.string().email().optional().or(z.literal("")),
@@ -33,7 +33,7 @@ const giftOrderSchema = z.object({
 const groupBuyOrderSchema = z.object({
   groupBuyId: z.string().uuid(),
   bookId: z.string().uuid(),
-  quantity: z.number().int().min(1).max(20),
+  quantity: z.number().int().min(1).max(200),
   paymentMethod: z.enum(["bank_transfer", "in_person"]),
 });
 
@@ -53,6 +53,12 @@ async function getAuthedUser() {
   return { supabase, user };
 }
 
+type BookPricing = {
+  priceCents: number;
+  groupBuyPriceCents: number | null;
+  groupBuyMinQty: number | null;
+};
+
 /** Looks up current prices server-side — never trusts client-submitted prices. */
 async function fetchBookPrices(
   supabase: Awaited<ReturnType<typeof createClient>>,
@@ -60,10 +66,32 @@ async function fetchBookPrices(
 ) {
   const { data, error } = await supabase
     .from("books")
-    .select("id, price_cents")
+    .select("id, price_cents, group_buy_price_cents, group_buy_min_qty")
     .in("id", bookIds);
   if (error) throw error;
-  return new Map(data.map((b) => [b.id, b.price_cents ?? 0]));
+  return new Map<string, BookPricing>(
+    data.map((b) => [
+      b.id,
+      {
+        priceCents: b.price_cents ?? 0,
+        groupBuyPriceCents: b.group_buy_price_cents,
+        groupBuyMinQty: b.group_buy_min_qty,
+      },
+    ]),
+  );
+}
+
+/** Retail/gift orders unlock the group-buy price once quantity hits the book's minimum. */
+function resolveUnitPriceCents(pricing: BookPricing | undefined, quantity: number): number {
+  if (!pricing) return 0;
+  if (
+    pricing.groupBuyPriceCents != null &&
+    pricing.groupBuyMinQty != null &&
+    quantity >= pricing.groupBuyMinQty
+  ) {
+    return pricing.groupBuyPriceCents;
+  }
+  return pricing.priceCents;
 }
 
 export async function createRetailOrder(
@@ -83,7 +111,7 @@ export async function createRetailOrder(
   const orderItems = items.map((i) => ({
     book_id: i.bookId,
     quantity: i.quantity,
-    unit_price_cents: priceMap.get(i.bookId) ?? 0,
+    unit_price_cents: resolveUnitPriceCents(priceMap.get(i.bookId), i.quantity),
   }));
   const subtotalCents = calculateOrderSubtotalCents(
     orderItems.map((i) => ({ quantity: i.quantity, unitPriceCents: i.unit_price_cents })),
@@ -134,7 +162,7 @@ export async function createGiftOrder(
 
   const { bookId, quantity, paymentMethod, giftDeliveryMethod, ...gift } = parsed.data;
   const priceMap = await fetchBookPrices(supabase, [bookId]);
-  const unitPriceCents = priceMap.get(bookId) ?? 0;
+  const unitPriceCents = resolveUnitPriceCents(priceMap.get(bookId), quantity);
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -187,7 +215,10 @@ export async function createGroupBuyOrder(
 
   const { groupBuyId, bookId, quantity, paymentMethod } = parsed.data;
   const priceMap = await fetchBookPrices(supabase, [bookId]);
-  const unitPriceCents = priceMap.get(bookId) ?? 0;
+  const pricing = priceMap.get(bookId);
+  // Joining an established group-buy campaign always gets the group price,
+  // regardless of the individual order's own quantity.
+  const unitPriceCents = pricing?.groupBuyPriceCents ?? pricing?.priceCents ?? 0;
 
   const { data: order, error: orderError } = await supabase
     .from("orders")

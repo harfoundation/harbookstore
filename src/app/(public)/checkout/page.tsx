@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCart } from "@/components/cart/cart-provider";
+import { useCart, effectiveUnitPriceCents } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
               {item.title} × {item.quantity}
             </span>
             <span>
-              AUD ${(((item.priceCents ?? 0) * item.quantity) / 100).toFixed(2)}
+              AUD ${((effectiveUnitPriceCents(item) * item.quantity) / 100).toFixed(2)}
             </span>
           </div>
         ))}

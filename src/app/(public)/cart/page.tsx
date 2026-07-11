@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCart } from "@/components/cart/cart-provider";
+import { useCart, effectiveUnitPriceCents } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -23,32 +23,50 @@ export default function CartPage() {
       <h1 className="text-2xl font-bold">購物車</h1>
 
       <div className="divide-y rounded-lg border">
-        {items.map((item) => (
-          <div key={item.bookId} className="flex items-center gap-4 p-4">
-            <div className="flex-1">
-              <p className="font-medium">{item.title}</p>
-              {item.author && (
-                <p className="text-muted-foreground text-sm">{item.author}</p>
-              )}
+        {items.map((item) => {
+          const unitPriceCents = effectiveUnitPriceCents(item);
+          const isGroupBuyPrice =
+            item.groupBuyPriceCents != null && unitPriceCents === item.groupBuyPriceCents;
+          return (
+            <div key={item.bookId} className="flex items-center gap-4 p-4">
+              <div className="flex-1">
+                <p className="font-medium">{item.title}</p>
+                {item.author && (
+                  <p className="text-muted-foreground text-sm">{item.author}</p>
+                )}
+                {isGroupBuyPrice ? (
+                  <p className="text-sm text-green-700">
+                    已達團購最低件數，套用團購價 AUD ${(item.groupBuyPriceCents! / 100).toFixed(2)}
+                  </p>
+                ) : (
+                  item.groupBuyMinQty != null &&
+                  item.groupBuyPriceCents != null && (
+                    <p className="text-muted-foreground text-sm">
+                      滿 {item.groupBuyMinQty} 件可享團購價 AUD $
+                      {(item.groupBuyPriceCents / 100).toFixed(2)}
+                    </p>
+                  )
+                )}
+              </div>
+              <Input
+                type="number"
+                min={1}
+                max={200}
+                value={item.quantity}
+                onChange={(e) =>
+                  setQuantity(item.bookId, Math.max(1, Number(e.target.value) || 1))
+                }
+                className="w-20"
+              />
+              <span className="w-24 text-right text-sm">
+                AUD ${((unitPriceCents * item.quantity) / 100).toFixed(2)}
+              </span>
+              <Button variant="ghost" size="sm" onClick={() => removeItem(item.bookId)}>
+                移除
+              </Button>
             </div>
-            <Input
-              type="number"
-              min={1}
-              max={20}
-              value={item.quantity}
-              onChange={(e) =>
-                setQuantity(item.bookId, Math.max(1, Number(e.target.value) || 1))
-              }
-              className="w-20"
-            />
-            <span className="w-24 text-right text-sm">
-              AUD ${(((item.priceCents ?? 0) * item.quantity) / 100).toFixed(2)}
-            </span>
-            <Button variant="ghost" size="sm" onClick={() => removeItem(item.bookId)}>
-              移除
-            </Button>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="flex items-center justify-between">

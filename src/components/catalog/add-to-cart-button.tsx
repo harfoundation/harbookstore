@@ -15,6 +15,8 @@ export function AddToCartButton({
     author: string | null;
     cover_image_url: string | null;
     price_cents: number | null;
+    group_buy_price_cents?: number | null;
+    group_buy_min_qty?: number | null;
     procurement_status: string;
   };
 }) {
@@ -29,7 +31,7 @@ export function AddToCartButton({
       <Input
         type="number"
         min={1}
-        max={20}
+        max={200}
         value={quantity}
         onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
         className="w-20"
@@ -45,6 +47,8 @@ export function AddToCartButton({
               author: book.author,
               coverImageUrl: book.cover_image_url,
               priceCents: book.price_cents,
+              groupBuyPriceCents: book.group_buy_price_cents ?? null,
+              groupBuyMinQty: book.group_buy_min_qty ?? null,
             },
             quantity,
           );
