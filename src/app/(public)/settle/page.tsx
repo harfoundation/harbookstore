@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BilingualResourceCard } from "@/components/settlement/bilingual-resource-card";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "移民安家 Settle in Australia" };
+export const metadata: Metadata = { title: "留學和移民 Settle in Australia" };
 
 const CATEGORIES: { key: string; titleZh: string; titleEn: string }[] = [
   { key: "housing", titleZh: "買租房安家", titleEn: "Housing" },
@@ -23,7 +23,7 @@ export default async function SettlePage() {
     <div className="mx-auto max-w-3xl space-y-10">
       <header className="space-y-2 text-center">
         <h1 className="text-3xl font-bold">
-          移民安家 <span className="font-poppins">Settle in Australia</span>
+          留學和移民 <span className="font-poppins">Settle in Australia</span>
         </h1>
         <p className="text-muted-foreground mx-auto max-w-2xl text-balance">
           無論你剛抵埗，還是移民二代想重新扎根——買租房、創業、學習就業，這裡都有實用的入門指引。
