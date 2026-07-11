@@ -36,7 +36,6 @@ const NAV_LINKS = [
 // open to them (kept in sync with PUBLIC_ALLOWED_PATHS/PREFIXES in
 // src/lib/supabase/middleware.ts) — no point showing a link that redirects.
 const PUBLIC_NAV_HREFS = new Set([
-  "/settle",
   "/catalog",
   "/articles",
   "/reading-shares",
