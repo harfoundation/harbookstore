@@ -16,7 +16,10 @@ export function GroupBuyWidget({
   bookId: string;
   isLoggedIn: boolean;
 }) {
-  const [quantity, setQuantity] = useState(1);
+  // Raw string state — clamping on every keystroke forces the field back to
+  // "1" the instant it's cleared, making it impossible to type a fresh
+  // multi-digit number.
+  const [quantityInput, setQuantityInput] = useState("1");
   const [isPending, startTransition] = useTransition();
   const progress = calculateGroupBuyProgress(groupBuy.current_qty, groupBuy.target_qty);
   const isOpen = groupBuy.status === "open";
@@ -39,8 +42,13 @@ export function GroupBuyWidget({
             type="number"
             min={1}
             max={20}
-            value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+            value={quantityInput}
+            onChange={(e) => setQuantityInput(e.target.value)}
+            onBlur={() =>
+              setQuantityInput(
+                String(Math.max(1, Math.min(20, Math.trunc(Number(quantityInput)) || 1))),
+              )
+            }
             className="w-20"
           />
           <Button
@@ -50,6 +58,11 @@ export function GroupBuyWidget({
                 toast.error("請先登入才能加入團購");
                 return;
               }
+              const quantity = Math.max(
+                1,
+                Math.min(20, Math.trunc(Number(quantityInput)) || 1),
+              );
+              setQuantityInput(String(quantity));
               startTransition(async () => {
                 const result = await createGroupBuyOrder({
                   groupBuyId: groupBuy.id,

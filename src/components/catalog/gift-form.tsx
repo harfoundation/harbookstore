@@ -22,7 +22,10 @@ export function GiftForm({
   book: { id: string; title: string; price_cents: number | null };
 }) {
   const router = useRouter();
-  const [quantity, setQuantity] = useState(1);
+  // Raw string state — clamping on every keystroke forces the field back to
+  // "1" the instant it's cleared, making it impossible to type a fresh
+  // multi-digit number.
+  const [quantityInput, setQuantityInput] = useState("1");
   const [recipientName, setRecipientName] = useState("");
   const [recipientEmail, setRecipientEmail] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
@@ -37,6 +40,8 @@ export function GiftForm({
       toast.error("請填寫收禮人姓名");
       return;
     }
+    const quantity = Math.max(1, Math.min(10, Math.trunc(Number(quantityInput)) || 1));
+    setQuantityInput(String(quantity));
     setSubmitting(true);
     const result = await createGiftOrder({
       bookId: book.id,
@@ -73,8 +78,13 @@ export function GiftForm({
           type="number"
           min={1}
           max={10}
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+          value={quantityInput}
+          onChange={(e) => setQuantityInput(e.target.value)}
+          onBlur={() =>
+            setQuantityInput(
+              String(Math.max(1, Math.min(10, Math.trunc(Number(quantityInput)) || 1))),
+            )
+          }
         />
       </div>
 

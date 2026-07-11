@@ -1,9 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useCart, effectiveUnitPriceCents } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+// Local string state so the user can freely clear/retype a multi-digit
+// quantity — clamping into the cart store on every keystroke forces the
+// field back to "1" the instant it's cleared, making it impossible to type
+// a fresh number like "24".
+function QuantityInput({
+  quantity,
+  onCommit,
+}: {
+  quantity: number;
+  onCommit: (quantity: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(quantity));
+
+  function commit() {
+    const n = Math.max(1, Math.min(200, Math.trunc(Number(draft)) || 1));
+    setDraft(String(n));
+    onCommit(n);
+  }
+
+  return (
+    <Input
+      type="number"
+      min={1}
+      max={200}
+      value={draft}
+      onChange={(e) => setDraft(e.target.value)}
+      onBlur={commit}
+      className="w-20"
+    />
+  );
+}
 
 export default function CartPage() {
   const { items, subtotalCents, setQuantity, removeItem } = useCart();
@@ -48,15 +81,9 @@ export default function CartPage() {
                   )
                 )}
               </div>
-              <Input
-                type="number"
-                min={1}
-                max={200}
-                value={item.quantity}
-                onChange={(e) =>
-                  setQuantity(item.bookId, Math.max(1, Number(e.target.value) || 1))
-                }
-                className="w-20"
+              <QuantityInput
+                quantity={item.quantity}
+                onCommit={(quantity) => setQuantity(item.bookId, quantity)}
               />
               <span className="w-24 text-right text-sm">
                 AUD ${((unitPriceCents * item.quantity) / 100).toFixed(2)}
