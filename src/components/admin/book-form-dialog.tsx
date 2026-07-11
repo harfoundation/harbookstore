@@ -34,6 +34,8 @@ type Book = {
   isbn: string | null;
   description: string | null;
   price_cents: number | null;
+  group_buy_price_cents: number | null;
+  group_buy_min_qty: number | null;
   procurement_status: string;
   stock_qty: number;
   is_lendable: boolean;
@@ -49,6 +51,8 @@ const EMPTY: BookFormInput = {
   isbn: "",
   description: "",
   priceCents: null,
+  groupBuyPriceCents: null,
+  groupBuyMinQty: null,
   procurementStatus: "preorder",
   stockQty: 0,
   isLendable: false,
@@ -78,6 +82,8 @@ export function BookFormDialog({
           isbn: book.isbn ?? "",
           description: book.description ?? "",
           priceCents: book.price_cents,
+          groupBuyPriceCents: book.group_buy_price_cents,
+          groupBuyMinQty: book.group_buy_min_qty,
           procurementStatus:
             book.procurement_status as BookFormInput["procurementStatus"],
           stockQty: book.stock_qty,
@@ -211,6 +217,35 @@ export function BookFormDialog({
                 value={form.stockQty}
                 onChange={(e) =>
                   setForm({ ...form, stockQty: Number(e.target.value) || 0 })
+                }
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label>團購價（澳幣分）</Label>
+              <Input
+                type="number"
+                value={form.groupBuyPriceCents ?? ""}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    groupBuyPriceCents: e.target.value ? Number(e.target.value) : null,
+                  })
+                }
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label>團購最低件數</Label>
+              <Input
+                type="number"
+                value={form.groupBuyMinQty ?? ""}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    groupBuyMinQty: e.target.value ? Number(e.target.value) : null,
+                  })
                 }
               />
             </div>

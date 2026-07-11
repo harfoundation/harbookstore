@@ -17,6 +17,7 @@ export function BookCard({
     title: string;
     author: string | null;
     price_cents: number | null;
+    group_buy_price_cents: number | null;
     procurement_status: string;
     poster_number: number | null;
   };
@@ -37,11 +38,18 @@ export function BookCard({
         <CardContent className="space-y-2">
           {book.author && <p className="text-muted-foreground text-sm">{book.author}</p>}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">
-              {book.price_cents != null
-                ? `AUD $${(book.price_cents / 100).toFixed(2)}`
-                : "價格待定"}
-            </span>
+            <div className="text-sm">
+              <div className="font-medium">
+                {book.price_cents != null
+                  ? `零售 AUD $${(book.price_cents / 100).toFixed(2)}`
+                  : "價格待定"}
+              </div>
+              {book.group_buy_price_cents != null && (
+                <div className="text-muted-foreground">
+                  團購 AUD ${(book.group_buy_price_cents / 100).toFixed(2)}
+                </div>
+              )}
+            </div>
             <Badge
               variant={book.procurement_status === "available" ? "default" : "secondary"}
             >

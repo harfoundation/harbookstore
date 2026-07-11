@@ -30,7 +30,7 @@ export default async function AdminBooksPage() {
     supabase
       .from("books")
       .select(
-        "id, category_id, poster_number, title, author, translator, isbn, description, price_cents, procurement_status, stock_qty, is_lendable, is_active, approval_status, submitted_by, profiles!books_submitted_by_fkey(display_name)",
+        "id, category_id, poster_number, title, author, translator, isbn, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, stock_qty, is_lendable, is_active, approval_status, submitted_by, profiles!books_submitted_by_fkey(display_name)",
       )
       .order("poster_number"),
     supabase.from("book_categories").select("id, name_zh").order("sort_order"),

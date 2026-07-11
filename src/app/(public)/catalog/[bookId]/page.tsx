@@ -34,7 +34,7 @@ export default async function BookDetailPage({
       supabase
         .from("books")
         .select(
-          "id, title, author, translator, description, price_cents, procurement_status, is_lendable, cover_image_url, category_id, book_categories(slug, name_zh)",
+          "id, title, author, translator, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, is_lendable, cover_image_url, category_id, book_categories(slug, name_zh)",
         )
         .eq("id", bookId)
         .single(),
@@ -88,7 +88,7 @@ export default async function BookDetailPage({
         <div className="flex items-center gap-3">
           <span className="text-xl font-semibold">
             {book.price_cents != null
-              ? `AUD $${(book.price_cents / 100).toFixed(2)}`
+              ? `零售 AUD $${(book.price_cents / 100).toFixed(2)}`
               : "價格待定"}
           </span>
           <Badge
@@ -97,6 +97,13 @@ export default async function BookDetailPage({
             {STATUS_LABEL[book.procurement_status] ?? book.procurement_status}
           </Badge>
         </div>
+
+        {book.group_buy_price_cents != null && (
+          <p className="text-muted-foreground text-sm">
+            團購價 AUD ${(book.group_buy_price_cents / 100).toFixed(2)}
+            {book.group_buy_min_qty != null && `（滿 ${book.group_buy_min_qty} 件成團）`}
+          </p>
+        )}
 
         {book.description && (
           <p className="text-sm leading-relaxed">{book.description}</p>

@@ -33,6 +33,8 @@ const EMPTY: BookFormInput = {
   isbn: "",
   description: "",
   priceCents: null,
+  groupBuyPriceCents: null,
+  groupBuyMinQty: null,
   procurementStatus: "preorder",
   stockQty: 0,
   isLendable: false,

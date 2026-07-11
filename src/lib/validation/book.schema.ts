@@ -10,6 +10,8 @@ export const bookFormSchema = z.object({
   isbn: z.string().max(20).optional(),
   description: z.string().max(2000).optional(),
   priceCents: z.number().int().min(0).nullable(),
+  groupBuyPriceCents: z.number().int().min(0).nullable(),
+  groupBuyMinQty: z.number().int().positive().nullable(),
   procurementStatus: z.enum(["available", "preorder", "out_of_stock", "discontinued"]),
   stockQty: z.number().int().min(0),
   isLendable: z.boolean(),

@@ -259,6 +259,8 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          group_buy_min_qty: number | null
+          group_buy_price_cents: number | null
           id: string
           is_active: boolean
           is_lendable: boolean
@@ -281,6 +283,8 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          group_buy_min_qty?: number | null
+          group_buy_price_cents?: number | null
           id?: string
           is_active?: boolean
           is_lendable?: boolean
@@ -303,6 +307,8 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          group_buy_min_qty?: number | null
+          group_buy_price_cents?: number | null
           id?: string
           is_active?: boolean
           is_lendable?: boolean

@@ -22,6 +22,8 @@ export async function upsertBook(input: BookFormInput): Promise<ActionResult> {
     isbn: v.isbn || null,
     description: v.description || null,
     price_cents: v.priceCents,
+    group_buy_price_cents: v.groupBuyPriceCents,
+    group_buy_min_qty: v.groupBuyMinQty,
     procurement_status: v.procurementStatus,
     stock_qty: v.stockQty,
     is_lendable: v.isLendable,
