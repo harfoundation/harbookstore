@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.wedevotebible.org" },
       { protocol: "https", hostname: "wdbook.com" },
       { protocol: "https", hostname: "*.wdbook.com" },
+      { protocol: "https", hostname: "shop.campus.org.tw" },
+      { protocol: "https", hostname: "www.cclm.com.tw" },
+      { protocol: "https", hostname: "www.logos.com.hk" },
+      { protocol: "https", hostname: "ccicebookstore.net" },
+      { protocol: "https", hostname: "im2.book.com.tw" },
     ],
   },
 };
