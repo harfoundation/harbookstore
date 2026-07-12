@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
+import { ReferMemberButton } from "@/components/refer-member-button";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,11 @@ export default async function HomePage() {
             免費借書
           </Button>
         </div>
+        {profile && (
+          <div className="flex justify-center pt-1">
+            <ReferMemberButton isLoggedIn={!!profile} />
+          </div>
+        )}
       </section>
 
       {(upcomingEvents ?? []).length > 0 && (

@@ -31,6 +31,7 @@ const NAV_LINKS = [
   { href: "/branches", label: "分店" },
   { href: "/join", label: "加入我們" },
   { href: "/donate", label: "奉獻支持" },
+  { href: "/membership", label: "會員登記" },
 ];
 
 // Soft-launch gate: non-staff visitors only see the pages that are actually

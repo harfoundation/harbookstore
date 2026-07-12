@@ -209,48 +209,6 @@ export type Database = {
         }
         Relationships: []
       }
-      book_recommendations: {
-        Row: {
-          book_id: string
-          created_at: string
-          id: string
-          message: string | null
-          recipient_name: string | null
-          recommended_by: string
-        }
-        Insert: {
-          book_id: string
-          created_at?: string
-          id?: string
-          message?: string | null
-          recipient_name?: string | null
-          recommended_by: string
-        }
-        Update: {
-          book_id?: string
-          created_at?: string
-          id?: string
-          message?: string | null
-          recipient_name?: string | null
-          recommended_by?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "book_recommendations_book_id_fkey"
-            columns: ["book_id"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "book_recommendations_recommended_by_fkey"
-            columns: ["recommended_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       bookable_services: {
         Row: {
           branch_id: string | null
@@ -1371,6 +1329,115 @@ export type Database = {
           },
         ]
       }
+      member_referrals: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          referred_by: string
+          referred_contact: string | null
+          referred_name: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          referred_by: string
+          referred_contact?: string | null
+          referred_name: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          referred_by?: string
+          referred_contact?: string | null
+          referred_name?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_referrals_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_fee_settings: {
+        Row: {
+          currency: string
+          fee_cents: number | null
+          id: boolean
+          updated_at: string
+          usage_note: string | null
+        }
+        Insert: {
+          currency?: string
+          fee_cents?: number | null
+          id?: boolean
+          updated_at?: string
+          usage_note?: string | null
+        }
+        Update: {
+          currency?: string
+          fee_cents?: number | null
+          id?: boolean
+          updated_at?: string
+          usage_note?: string | null
+        }
+        Relationships: []
+      }
+      membership_registrations: {
+        Row: {
+          created_at: string
+          currency: string
+          fee_cents: number | null
+          id: string
+          payment_method: string
+          payment_received_at: string | null
+          profile_id: string
+          registration_number: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          fee_cents?: number | null
+          id?: string
+          payment_method?: string
+          payment_received_at?: string | null
+          profile_id: string
+          registration_number?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          fee_cents?: number | null
+          id?: string
+          payment_method?: string
+          payment_received_at?: string | null
+          profile_id?: string
+          registration_number?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "membership_registrations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       order_items: {
         Row: {
           book_id: string | null
@@ -2200,21 +2267,6 @@ export type Database = {
       }
     }
     Views: {
-      book_recommendation_counts: {
-        Row: {
-          book_id: string | null
-          recommend_count: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "book_recommendations_book_id_fkey"
-            columns: ["book_id"]
-            isOneToOne: false
-            referencedRelation: "books"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       public_answered_questions: {
         Row: {
           admin_response_body: string | null

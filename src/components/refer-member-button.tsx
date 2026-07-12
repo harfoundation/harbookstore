@@ -14,28 +14,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { recommendBookToFriend } from "@/lib/actions/recommendations";
+import { referMember } from "@/lib/actions/member-referrals";
 import { getWhatsappShareLink } from "@/lib/whatsapp";
 
-export function RecommendBookButton({
-  bookId,
-  bookTitle,
-  isLoggedIn,
-}: {
-  bookId: string;
-  bookTitle: string;
-  isLoggedIn: boolean;
-}) {
+export function ReferMemberButton({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [open, setOpen] = useState(false);
-  const [recipientName, setRecipientName] = useState("");
+  const [referredName, setReferredName] = useState("");
+  const [referredContact, setReferredContact] = useState("");
   const [message, setMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit() {
+    if (!referredName.trim()) {
+      toast.error("請填寫朋友的名字");
+      return;
+    }
     setSubmitting(true);
-    const result = await recommendBookToFriend({
-      bookId,
-      recipientName: recipientName || undefined,
+    const result = await referMember({
+      referredName,
+      referredContact: referredContact || undefined,
       message: message || undefined,
     });
     setSubmitting(false);
@@ -46,13 +43,14 @@ export function RecommendBookButton({
     }
 
     const shareText = message
-      ? `我想推薦你這本書：《${bookTitle}》\n\n${message}\n\n山書坊：${window.location.href}`
-      : `我想推薦你這本書：《${bookTitle}》\n\n山書坊：${window.location.href}`;
+      ? `我想邀請你加入山書坊！\n\n${message}\n\n${window.location.origin}/signup`
+      : `我想邀請你加入山書坊——一起讀書、成長：${window.location.origin}/signup`;
     window.open(getWhatsappShareLink(shareText), "_blank");
 
-    toast.success("已記錄推薦，WhatsApp 分享視窗已開啟");
+    toast.success("已記錄推薦，WhatsApp 邀請視窗已開啟");
     setOpen(false);
-    setRecipientName("");
+    setReferredName("");
+    setReferredContact("");
     setMessage("");
   }
 
@@ -61,28 +59,35 @@ export function RecommendBookButton({
       <DialogTrigger
         render={
           <Button
-            variant="outline"
             onClick={(e) => {
               if (!isLoggedIn) {
                 e.preventDefault();
-                toast.error("請先登入才能推薦書籍");
+                toast.error("請先登入才能推薦朋友");
               }
             }}
           />
         }
       >
-        推薦給朋友
+        推薦朋友加入
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>推薦《{bookTitle}》給朋友</DialogTitle>
+          <DialogTitle>推薦朋友加入山書坊</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div className="space-y-1.5">
-            <Label>朋友的名字（選填）</Label>
+            <Label>朋友的名字</Label>
             <Input
-              value={recipientName}
-              onChange={(e) => setRecipientName(e.target.value)}
+              value={referredName}
+              onChange={(e) => setReferredName(e.target.value)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>聯絡方式（選填）</Label>
+            <Input
+              value={referredContact}
+              onChange={(e) => setReferredContact(e.target.value)}
+              placeholder="電郵或電話"
             />
           </div>
           <div className="space-y-1.5">
@@ -90,11 +95,11 @@ export function RecommendBookButton({
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="為什麼想推薦這本書給他？"
+              placeholder="為什麼想邀請他加入？"
             />
           </div>
           <p className="text-muted-foreground text-sm">
-            送出後會開啟 WhatsApp，讓您把推薦分享給朋友。
+            送出後會開啟 WhatsApp，讓您把邀請分享給朋友。
           </p>
         </div>
         <DialogFooter>
