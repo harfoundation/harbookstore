@@ -9,6 +9,7 @@ import { AddToCartButton } from "@/components/catalog/add-to-cart-button";
 import { WishlistButton } from "@/components/catalog/wishlist-button";
 import { BorrowRequestButton } from "@/components/catalog/borrow-request-button";
 import { GroupBuyWidget } from "@/components/catalog/group-buy-widget";
+import { RecommendBookButton } from "@/components/catalog/recommend-book-button";
 import { ReadingShareCard } from "@/components/reading-shares/reading-share-card";
 import { isStaffRole } from "@/lib/auth/get-current-profile";
 
@@ -30,7 +31,7 @@ export default async function BookDetailPage({
   const supabase = await createClient();
   const profile = await getCurrentProfile();
 
-  const [{ data: book }, { data: groupBuy }, wishlistResult, { data: shares }] =
+  const [{ data: book }, { data: groupBuy }, wishlistResult, { data: shares }, { data: recommendCount }] =
     await Promise.all([
       supabase
         .from("books")
@@ -59,6 +60,11 @@ export default async function BookDetailPage({
         .eq("book_id", bookId)
         .order("created_at", { ascending: false })
         .limit(5),
+      supabase
+        .from("book_recommendation_counts")
+        .select("recommend_count")
+        .eq("book_id", bookId)
+        .maybeSingle(),
     ]);
 
   if (!book) notFound();
@@ -134,7 +140,18 @@ export default async function BookDetailPage({
           <Button render={<Link href={`/gift?bookId=${book.id}`} />} variant="outline">
             作為禮物贈送
           </Button>
+          <RecommendBookButton
+            bookId={book.id}
+            bookTitle={book.title}
+            isLoggedIn={!!profile}
+          />
         </div>
+
+        {(recommendCount?.recommend_count ?? 0) > 0 && (
+          <p className="text-muted-foreground text-sm">
+            已有 {recommendCount!.recommend_count} 位會員推薦這本書
+          </p>
+        )}
 
         {groupBuy && (
           <GroupBuyWidget groupBuy={groupBuy} bookId={book.id} isLoggedIn={!!profile} />

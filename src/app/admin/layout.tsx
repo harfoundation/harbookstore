@@ -11,6 +11,7 @@ const ADMIN_NAV = [
   { href: "/admin/congregations", label: "主日名冊管理" },
   { href: "/admin/books", label: "書籍" },
   { href: "/admin/orders", label: "訂單" },
+  { href: "/admin/donations", label: "奉獻管理" },
   { href: "/admin/borrow-requests", label: "借閱申請" },
   { href: "/admin/courses", label: "課程" },
   { href: "/admin/articles", label: "書評文章" },

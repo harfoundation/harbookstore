@@ -209,6 +209,48 @@ export type Database = {
         }
         Relationships: []
       }
+      book_recommendations: {
+        Row: {
+          book_id: string
+          created_at: string
+          id: string
+          message: string | null
+          recipient_name: string | null
+          recommended_by: string
+        }
+        Insert: {
+          book_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_name?: string | null
+          recommended_by: string
+        }
+        Update: {
+          book_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          recipient_name?: string | null
+          recommended_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_recommendations_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "book_recommendations_recommended_by_fkey"
+            columns: ["recommended_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookable_services: {
         Row: {
           branch_id: string | null
@@ -1134,6 +1176,65 @@ export type Database = {
             columns: ["book_id"]
             isOneToOne: false
             referencedRelation: "devotional_books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      donation_pledges: {
+        Row: {
+          amount_cents: number | null
+          created_at: string
+          currency: string
+          donor_email: string | null
+          donor_id: string | null
+          donor_name: string
+          donor_phone: string | null
+          id: string
+          payment_method: string
+          payment_received_at: string | null
+          pledge_number: string
+          purpose_note: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string
+          donor_email?: string | null
+          donor_id?: string | null
+          donor_name: string
+          donor_phone?: string | null
+          id?: string
+          payment_method?: string
+          payment_received_at?: string | null
+          pledge_number?: string
+          purpose_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string
+          donor_email?: string | null
+          donor_id?: string | null
+          donor_name?: string
+          donor_phone?: string | null
+          id?: string
+          payment_method?: string
+          payment_received_at?: string | null
+          pledge_number?: string
+          purpose_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donation_pledges_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2099,6 +2200,21 @@ export type Database = {
       }
     }
     Views: {
+      book_recommendation_counts: {
+        Row: {
+          book_id: string | null
+          recommend_count: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_recommendations_book_id_fkey"
+            columns: ["book_id"]
+            isOneToOne: false
+            referencedRelation: "books"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       public_answered_questions: {
         Row: {
           admin_response_body: string | null
