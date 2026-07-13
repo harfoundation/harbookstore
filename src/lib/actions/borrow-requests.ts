@@ -25,6 +25,26 @@ export async function createBorrowRequest(
   } = await supabase.auth.getUser();
   if (!user) return { success: false, error: "請先登入" };
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  const isStaff = !!profile && ["admin", "committee", "instructor"].includes(profile.role);
+
+  if (!isStaff) {
+    const { data: membership } = await supabase
+      .from("membership_registrations")
+      .select("id")
+      .eq("profile_id", user.id)
+      .eq("status", "confirmed")
+      .limit(1)
+      .maybeSingle();
+    if (!membership) {
+      return { success: false, error: "免費借閱是會員專屬福利，請先登記成為會員" };
+    }
+  }
+
   const { error } = await supabase.from("borrow_requests").insert({
     requester_id: user.id,
     book_id: parsed.data.bookId,

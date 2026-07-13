@@ -29,8 +29,9 @@ export default async function BookDetailPage({
   const { bookId } = await params;
   const supabase = await createClient();
   const profile = await getCurrentProfile();
+  const isStaff = isStaffRole(profile?.role);
 
-  const [{ data: book }, { data: groupBuy }, wishlistResult, { data: shares }] =
+  const [{ data: book }, { data: groupBuy }, wishlistResult, { data: shares }, membershipResult] =
     await Promise.all([
       supabase
         .from("books")
@@ -59,7 +60,17 @@ export default async function BookDetailPage({
         .eq("book_id", bookId)
         .order("created_at", { ascending: false })
         .limit(5),
+      profile
+        ? supabase
+            .from("membership_registrations")
+            .select("id")
+            .eq("profile_id", profile.id)
+            .eq("status", "confirmed")
+            .limit(1)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
     ]);
+  const isMember = isStaff || !!membershipResult.data;
 
   if (!book) notFound();
 
@@ -129,7 +140,11 @@ export default async function BookDetailPage({
             isLoggedIn={!!profile}
           />
           {book.is_lendable && (
-            <BorrowRequestButton bookId={book.id} isLoggedIn={!!profile} />
+            <BorrowRequestButton
+              bookId={book.id}
+              isLoggedIn={!!profile}
+              isMember={isMember}
+            />
           )}
           <Button render={<Link href={`/gift?bookId=${book.id}`} />} variant="outline">
             作為禮物贈送

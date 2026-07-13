@@ -2319,6 +2319,7 @@ export type Database = {
         Args: { target_church_id: string; uid: string }
         Returns: boolean
       }
+      is_confirmed_member: { Args: { uid: string }; Returns: boolean }
       is_partner: { Args: { uid: string }; Returns: boolean }
       is_staff: { Args: { uid: string }; Returns: boolean }
     }

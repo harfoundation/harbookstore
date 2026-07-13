@@ -25,9 +25,11 @@ type Branch = { id: string; suburb: string; city: string; state: string };
 export function BorrowRequestButton({
   bookId,
   isLoggedIn,
+  isMember = true,
 }: {
   bookId: string;
   isLoggedIn: boolean;
+  isMember?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<"self_pickup" | "mail">(
@@ -58,6 +60,10 @@ export function BorrowRequestButton({
         onClick={() => {
           if (!isLoggedIn) {
             toast.error("請先登入才能借閱");
+            return;
+          }
+          if (!isMember) {
+            toast.error("免費借閱是會員專屬福利，請先登記成為會員");
             return;
           }
           setOpen(true);
