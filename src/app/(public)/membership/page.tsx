@@ -20,8 +20,8 @@ export default async function MembershipPage() {
         <h1 className="text-2xl font-bold">會員登記</h1>
         <p className="text-muted-foreground mt-1">
           {settings?.fee_cents != null
-            ? `會員登記費：${settings.currency} $${(settings.fee_cents / 100).toFixed(2)}`
-            : "會員登記費用尚未公布，請洽詢我們。"}
+            ? `會員年費：${settings.currency} $${(settings.fee_cents / 100).toFixed(2)} ／ 年`
+            : "會員年費尚未公布，請洽詢我們。"}
         </p>
       </div>
 

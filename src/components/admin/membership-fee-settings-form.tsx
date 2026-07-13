@@ -23,9 +23,9 @@ export function MembershipFeeSettingsForm({
 
   return (
     <div className="space-y-3 rounded-lg border p-4">
-      <h2 className="font-semibold">會員登記費設定</h2>
+      <h2 className="font-semibold">會員年費設定</h2>
       <div className="space-y-1.5">
-        <Label>會員登記費（澳幣，留空表示尚未公布）</Label>
+        <Label>會員年費（澳幣／年，留空表示尚未公布）</Label>
         <Input
           type="number"
           min={0}
@@ -40,7 +40,7 @@ export function MembershipFeeSettingsForm({
         <Textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="說明會員登記費將如何使用"
+          placeholder="說明會員年費將如何使用"
           rows={4}
         />
       </div>
