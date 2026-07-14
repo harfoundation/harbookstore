@@ -30,6 +30,11 @@ export async function submitMembershipRegistration(
     .select("fee_cents, currency")
     .single();
 
+  const isFree = (settings?.fee_cents ?? 0) === 0;
+  if (!isFree && !parsed.data.paymentMethod) {
+    return { success: false, error: "請選擇繳費方式" };
+  }
+
   const v = parsed.data;
   const { data, error } = await supabase
     .from("membership_registrations")
@@ -37,7 +42,9 @@ export async function submitMembershipRegistration(
       profile_id: user.id,
       fee_cents: settings?.fee_cents ?? null,
       currency: settings?.currency ?? "AUD",
-      payment_method: v.paymentMethod,
+      payment_method: isFree ? "to_be_arranged" : v.paymentMethod,
+      status: isFree ? "confirmed" : "pending_review",
+      payment_received_at: isFree ? new Date().toISOString() : null,
     })
     .select("registration_number")
     .single();

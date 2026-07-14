@@ -61,21 +61,29 @@ export default async function AdminMembershipPage() {
                 <TableCell className="font-medium">{reg.registration_number}</TableCell>
                 <TableCell>{member?.display_name ?? "—"}</TableCell>
                 <TableCell>
-                  {reg.fee_cents != null
-                    ? `AUD $${(reg.fee_cents / 100).toFixed(2)} ／年`
-                    : "未指定"}
+                  {reg.fee_cents === 0
+                    ? "免費"
+                    : reg.fee_cents != null
+                      ? `AUD $${(reg.fee_cents / 100).toFixed(2)} ／年`
+                      : "未指定"}
                 </TableCell>
                 <TableCell>{PAYMENT_LABEL[reg.payment_method]}</TableCell>
                 <TableCell>
                   <Badge variant={reg.status === "confirmed" ? "default" : "secondary"}>
-                    {reg.status === "confirmed" ? "已收款" : "待確認"}
+                    {reg.status === "confirmed"
+                      ? reg.fee_cents === 0
+                        ? "有效會員"
+                        : "已收款"
+                      : "待確認"}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <MarkMembershipReceivedButton
-                    registrationId={reg.id}
-                    received={reg.status === "confirmed"}
-                  />
+                  {reg.fee_cents !== 0 && (
+                    <MarkMembershipReceivedButton
+                      registrationId={reg.id}
+                      received={reg.status === "confirmed"}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             );

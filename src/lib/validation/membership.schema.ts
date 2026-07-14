@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const membershipRegistrationSchema = z.object({
-  paymentMethod: z.enum(["bank_transfer", "in_person"]),
+  paymentMethod: z.enum(["bank_transfer", "in_person"]).optional(),
 });
 export type MembershipRegistrationInput = z.infer<typeof membershipRegistrationSchema>;
 

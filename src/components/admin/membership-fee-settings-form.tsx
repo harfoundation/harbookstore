@@ -25,7 +25,7 @@ export function MembershipFeeSettingsForm({
     <div className="space-y-3 rounded-lg border p-4">
       <h2 className="font-semibold">會員年費設定</h2>
       <div className="space-y-1.5">
-        <Label>會員年費（澳幣／年，留空表示尚未公布）</Label>
+        <Label>會員年費（澳幣／年，填 0 表示免費登記，留空表示尚未公布）</Label>
         <Input
           type="number"
           min={0}

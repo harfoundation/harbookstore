@@ -14,27 +14,31 @@ export default async function MembershipPage() {
     .select("fee_cents, currency, usage_note")
     .single();
 
+  const isFree = (settings?.fee_cents ?? 0) === 0;
+
   return (
     <div className="mx-auto max-w-lg space-y-6">
       <div>
         <h1 className="text-2xl font-bold">會員登記</h1>
         <p className="text-muted-foreground mt-1">
-          {settings?.fee_cents != null
-            ? `會員年費：${settings.currency} $${(settings.fee_cents / 100).toFixed(2)} ／ 年`
-            : "會員年費尚未公布，請洽詢我們。"}
+          {isFree
+            ? "會員登記免費，登記後即可使用免費借閱等會員福利。"
+            : settings?.fee_cents != null
+              ? `會員年費：${settings.currency} $${(settings.fee_cents / 100).toFixed(2)} ／ 年`
+              : "會員年費尚未公布，請洽詢我們。"}
         </p>
       </div>
 
       {settings?.usage_note && (
         <div className="space-y-1.5">
-          <h2 className="font-semibold">費用用途說明</h2>
+          <h2 className="font-semibold">說明</h2>
           <p className="text-muted-foreground text-sm leading-relaxed whitespace-pre-line">
             {settings.usage_note}
           </p>
         </div>
       )}
 
-      <MembershipRegisterButton isLoggedIn={!!profile} />
+      <MembershipRegisterButton isLoggedIn={!!profile} isFree={isFree} />
     </div>
   );
 }
