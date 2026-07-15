@@ -3,29 +3,25 @@
     "poster_number": 1,
     "category": "qibu",
     "title": "認識耶穌",
-    "author": null,
-    "needs_review": true
+    "author": "朴同成"
   },
   {
     "poster_number": 2,
     "category": "qibu",
     "title": "健康的門徒生活",
-    "author": null,
-    "needs_review": true
+    "author": "朴同成"
   },
   {
     "poster_number": 3,
     "category": "qibu",
     "title": "零基礎默想",
-    "author": null,
-    "needs_review": true
+    "author": "朴同成"
   },
   {
     "poster_number": 4,
     "category": "qibu",
     "title": "最重要的事—10課",
-    "author": null,
-    "needs_review": true
+    "author": "李在哲"
   },
 
   {
@@ -38,9 +34,8 @@
   {
     "poster_number": 6,
     "category": "renwu",
-    "title": "學生命高峰",
-    "author": "余達心",
-    "needs_review": true
+    "title": "攀生命高峰",
+    "author": "余達心"
   },
   {
     "poster_number": 7,
@@ -59,16 +54,38 @@
   {
     "poster_number": 9,
     "category": "renwu",
-    "title": "魯益師和與他的產地",
-    "author": null,
-    "needs_review": true
+    "title": "魯益師與他的產地",
+    "author": "麥格拉思"
   },
   {
     "poster_number": 10,
     "category": "renwu",
     "title": "上帝恩典的留聲機",
-    "author": null,
-    "needs_review": true
+    "author": "張文亮"
+  },
+  {
+    "poster_number": 11,
+    "category": "renwu",
+    "title": "上帝手中的墨水筆",
+    "author": "張文亮"
+  },
+  {
+    "poster_number": 12,
+    "category": "renwu",
+    "title": "熱血忘我的宗教改革者——加爾文傳",
+    "author": "帕爾克"
+  },
+  {
+    "poster_number": 13,
+    "category": "renwu",
+    "title": "尋找保羅",
+    "author": "賴特"
+  },
+  {
+    "poster_number": 14,
+    "category": "renwu",
+    "title": "照我本相",
+    "author": "葛培理"
   },
 
   {
@@ -89,22 +106,19 @@
     "poster_number": 17,
     "category": "jiaohui",
     "title": "21世紀門徒成長學",
-    "author": "吳正貫",
-    "needs_review": true
+    "author": "陳正賢"
   },
   {
     "poster_number": 18,
     "category": "jiaohui",
     "title": "教會生態學",
-    "author": null,
-    "needs_review": true
+    "author": "林鴻信"
   },
   {
     "poster_number": 19,
     "category": "jiaohui",
-    "title": "教會的未來",
-    "author": "吉姆",
-    "needs_review": true
+    "title": "教會的大未來",
+    "author": "吉姆·貝爾徹"
   },
   {
     "poster_number": 20,
@@ -117,8 +131,7 @@
     "poster_number": 21,
     "category": "jiaohui",
     "title": "夢想：建立使徒行傳的教會",
-    "author": "何用祚",
-    "needs_review": true
+    "author": "河用祚"
   },
 
   {
@@ -145,9 +158,8 @@
   {
     "poster_number": 25,
     "category": "tianguo",
-    "title": "21世紀天國藍圖",
-    "author": "賴特",
-    "needs_review": true
+    "title": "21世紀天國導論",
+    "author": "魏樂德"
   },
   {
     "poster_number": 26,
@@ -159,23 +171,20 @@
   {
     "poster_number": 27,
     "category": "tianguo",
-    "title": "門徒好榜樣",
-    "author": "魏樂德",
-    "needs_review": true
+    "title": "門徒好豐盛",
+    "author": "魏樂德"
   },
   {
     "poster_number": 28,
     "category": "tianguo",
-    "title": "溫柔操練教導",
-    "author": "魏樂德",
-    "needs_review": true
+    "title": "溫柔護教學",
+    "author": "魏樂德"
   },
   {
     "poster_number": 29,
     "category": "tianguo",
-    "title": "聖靈生療學",
-    "author": "包衡",
-    "needs_review": true
+    "title": "聖經生態學",
+    "author": "包衡"
   },
 
   {
