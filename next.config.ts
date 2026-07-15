@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.logos.com.hk" },
       { protocol: "https", hostname: "ccicebookstore.net" },
       { protocol: "https", hostname: "im2.book.com.tw" },
+      { protocol: "https", hostname: "cdnec.sanmin.com.tw" },
+      { protocol: "https", hostname: "imgs.cwgv.com.tw" },
       { protocol: "https", hostname: "hgdhqbkduxibuktytvsu.supabase.co" },
       { protocol: "http", hostname: "127.0.0.1", port: "54321" },
     ],
