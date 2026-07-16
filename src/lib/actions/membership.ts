@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { sendMembershipConfirmedWhatsapp } from "@/lib/whatsapp/send";
 import {
   membershipRegistrationSchema,
   membershipFeeSettingsSchema,
@@ -51,6 +52,20 @@ export async function submitMembershipRegistration(
 
   if (error || !data) return { success: false, error: error?.message ?? "送出失敗" };
 
+  if (isFree) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("phone")
+      .eq("id", user.id)
+      .single();
+    if (profile?.phone) {
+      await sendMembershipConfirmedWhatsapp({
+        to: profile.phone,
+        registrationNumber: data.registration_number,
+      });
+    }
+  }
+
   revalidatePath("/admin/membership");
   return { success: true, registrationNumber: data.registration_number };
 }
@@ -71,6 +86,21 @@ export async function markMembershipRegistrationReceived(
     .eq("id", registrationId);
 
   if (error) return { success: false, error: error.message };
+
+  if (received) {
+    const { data: registration } = await supabase
+      .from("membership_registrations")
+      .select("registration_number, profiles(phone)")
+      .eq("id", registrationId)
+      .single();
+    const profile = registration?.profiles as unknown as { phone: string | null } | null;
+    if (registration && profile?.phone) {
+      await sendMembershipConfirmedWhatsapp({
+        to: profile.phone,
+        registrationNumber: registration.registration_number,
+      });
+    }
+  }
 
   revalidatePath("/admin/membership");
   return { success: true };

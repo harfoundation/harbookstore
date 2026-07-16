@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { submitDonationPledge } from "@/lib/actions/donations";
+import { JoinWhatsappCommunityButton } from "@/components/join-whatsapp-community-button";
 
 const PRESET_AMOUNTS = [20, 50, 100, 200];
 
@@ -72,6 +73,9 @@ export function DonateForm({
           <p className="text-muted-foreground mt-1">
             我們會盡快透過您留下的聯絡方式，提供銀行轉帳資訊。完成轉帳後，工作人員將手動確認收款。
           </p>
+        </div>
+        <div className="flex justify-center pt-1">
+          <JoinWhatsappCommunityButton />
         </div>
       </div>
     );

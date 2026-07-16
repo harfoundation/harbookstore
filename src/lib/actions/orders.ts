@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { calculateOrderSubtotalCents } from "@/lib/validation/order.schema";
 import { sendOrderConfirmationEmail } from "@/lib/email/send";
+import { sendOrderConfirmedWhatsapp } from "@/lib/whatsapp/send";
 import type { TablesUpdate } from "@/types/database.types";
 
 const retailItemSchema = z.object({
@@ -329,11 +330,18 @@ export async function adminUpdateOrderStatus(
     .from("orders")
     .update(update)
     .eq("id", parsed.data.orderId)
-    .select("order_number")
+    .select("order_number, profiles(phone)")
     .single();
 
   if (error || !data)
     return { success: false, error: error?.message ?? "更新失敗（僅限管理員）" };
+
+  if (parsed.data.status === "confirmed") {
+    const profile = data.profiles as unknown as { phone: string | null } | null;
+    if (profile?.phone) {
+      await sendOrderConfirmedWhatsapp({ to: profile.phone, orderNumber: data.order_number });
+    }
+  }
 
   revalidatePath("/admin/orders");
   revalidatePath("/orders");

@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { sendBorrowApprovedWhatsapp } from "@/lib/whatsapp/send";
 import type { TablesUpdate } from "@/types/database.types";
 
 type ActionResult = { success: true } | { success: false; error: string };
@@ -101,6 +103,26 @@ export async function adminUpdateBorrowRequestStatus(
     .eq("id", parsed.data.borrowRequestId);
 
   if (error) return { success: false, error: error.message };
+
+  if (parsed.data.status === "approved") {
+    const { data: request } = await supabase
+      .from("borrow_requests")
+      .select("requester_id, books(title)")
+      .eq("id", parsed.data.borrowRequestId)
+      .single();
+    if (request) {
+      const admin = createAdminClient();
+      const { data: profile } = await admin
+        .from("profiles")
+        .select("phone")
+        .eq("id", request.requester_id)
+        .single();
+      const book = request.books as unknown as { title: string } | null;
+      if (profile?.phone && book?.title) {
+        await sendBorrowApprovedWhatsapp({ to: profile.phone, bookTitle: book.title });
+      }
+    }
+  }
 
   revalidatePath("/admin/borrow-requests");
   revalidatePath("/borrow-requests");

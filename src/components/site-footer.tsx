@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getWhatsappLink } from "@/lib/whatsapp";
+import { JoinWhatsappCommunityButton } from "@/components/join-whatsapp-community-button";
 
 export function SiteFooter() {
   const whatsappLink = getWhatsappLink("您好，我想了解山書坊的相關資訊。");
@@ -47,6 +48,8 @@ export function SiteFooter() {
             </p>
           )}
         </div>
+
+        <JoinWhatsappCommunityButton variant="outline" />
       </div>
     </footer>
   );

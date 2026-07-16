@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getCurrentProfile, isStaffRole } from "@/lib/auth/get-current-profile";
 import { ReferMemberButton } from "@/components/refer-member-button";
+import { JoinWhatsappCommunityButton } from "@/components/join-whatsapp-community-button";
 
 export const dynamic = "force-dynamic";
 
@@ -49,13 +50,14 @@ export default async function HomePage() {
           陪你回到耶穌，建立根基——培訓課程、書評專欄、團購贈書與免費借閱，
           一個以人為本的基督教書籍事工。
         </p>
-        <div className="flex justify-center gap-3 pt-2">
+        <div className="flex flex-wrap justify-center gap-3 pt-2">
           <Button render={<Link href="/catalog" />} size="lg">
             瀏覽書目
           </Button>
           <Button render={<Link href="/lending" />} size="lg" variant="outline">
             免費借書
           </Button>
+          <JoinWhatsappCommunityButton variant="outline" className="text-base" />
         </div>
         {profile && (
           <div className="flex justify-center pt-1">

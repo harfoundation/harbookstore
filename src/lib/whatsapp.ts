@@ -20,3 +20,8 @@ export function getWhatsappLink(message?: string): string | null {
 export function getWhatsappShareLink(message: string): string {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
+
+/** Invite link to our WhatsApp Community — null if not configured. */
+export function getWhatsappCommunityLink(): string | null {
+  return process.env.NEXT_PUBLIC_WHATSAPP_COMMUNITY_URL || null;
+}

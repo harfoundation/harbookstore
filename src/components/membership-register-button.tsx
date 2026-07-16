@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { submitMembershipRegistration } from "@/lib/actions/membership";
+import { JoinWhatsappCommunityButton } from "@/components/join-whatsapp-community-button";
 
 export function MembershipRegisterButton({
   isLoggedIn,
@@ -57,6 +58,9 @@ export function MembershipRegisterButton({
             我們會盡快與您聯繫安排繳費，完成後工作人員將手動確認收款。
           </p>
         )}
+        <div className="flex justify-center pt-1">
+          <JoinWhatsappCommunityButton />
+        </div>
       </div>
     );
   }
