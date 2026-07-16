@@ -36,7 +36,7 @@ export default async function BookDetailPage({
       supabase
         .from("books")
         .select(
-          "id, title, author, translator, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, is_lendable, cover_image_url, category_id, book_categories(slug, name_zh)",
+          "id, title, author, translator, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, is_lendable, cover_image_url, ebook_url, category_id, book_categories(slug, name_zh)",
         )
         .eq("id", bookId)
         .single(),
@@ -149,6 +149,14 @@ export default async function BookDetailPage({
           <Button render={<Link href={`/gift?bookId=${book.id}`} />} variant="outline">
             作為禮物贈送
           </Button>
+          {book.ebook_url && (
+            <Button
+              render={<Link href={book.ebook_url} target="_blank" rel="noopener noreferrer" />}
+              variant="outline"
+            >
+              電子版購買 ↗
+            </Button>
+          )}
         </div>
 
         {groupBuy && (

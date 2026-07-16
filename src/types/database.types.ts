@@ -259,6 +259,7 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          ebook_url: string | null
           group_buy_min_qty: number | null
           group_buy_price_cents: number | null
           id: string
@@ -283,6 +284,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          ebook_url?: string | null
           group_buy_min_qty?: number | null
           group_buy_price_cents?: number | null
           id?: string
@@ -307,6 +309,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          ebook_url?: string | null
           group_buy_min_qty?: number | null
           group_buy_price_cents?: number | null
           id?: string
