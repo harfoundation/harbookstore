@@ -1787,6 +1787,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          original_price_cents: number | null
           price_cents: number
           status: string
           submitted_by: string | null
@@ -1802,6 +1803,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          original_price_cents?: number | null
           price_cents: number
           status?: string
           submitted_by?: string | null
@@ -1817,6 +1819,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          original_price_cents?: number | null
           price_cents?: number
           status?: string
           submitted_by?: string | null

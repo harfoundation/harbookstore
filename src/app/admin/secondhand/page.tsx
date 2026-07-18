@@ -16,10 +16,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "管理二手商品" };
 
 const CONDITION_LABELS: Record<string, string> = {
-  like_new: "近全新",
-  good: "良好",
-  fair: "尚可",
-  well_loved: "使用痕跡明顯",
+  brand_new: "A 全新",
+  near_new: "B 近全新",
+  good: "C 良好",
+  fair: "D 普通",
+  poor: "E 差強人意",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -34,7 +35,7 @@ export default async function AdminSecondhandPage() {
     supabase
       .from("secondhand_items")
       .select(
-        "id, title, author, category_id, condition, description, price_cents, branch_id, status",
+        "id, title, author, category_id, condition, description, price_cents, original_price_cents, branch_id, status",
       )
       .order("created_at", { ascending: false }),
     supabase.from("book_categories").select("id, name_zh").order("sort_order"),

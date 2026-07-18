@@ -8,10 +8,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "二手品選購" };
 
 const CONDITION_LABELS: Record<string, string> = {
-  like_new: "近全新",
+  brand_new: "全新",
+  near_new: "近全新",
   good: "良好",
-  fair: "尚可",
-  well_loved: "使用痕跡明顯",
+  fair: "普通",
+  poor: "差強人意",
 };
 
 export default async function SecondhandPage() {
@@ -19,7 +20,7 @@ export default async function SecondhandPage() {
   const { data: items } = await supabase
     .from("secondhand_items")
     .select(
-      "id, title, author, condition, description, price_cents, status, book_categories(name_zh), branches(suburb)",
+      "id, title, author, condition, description, price_cents, original_price_cents, status, book_categories(name_zh), branches(suburb)",
     )
     .eq("status", "available")
     .order("created_at", { ascending: false });
@@ -60,8 +61,15 @@ export default async function SecondhandPage() {
                     <p className="line-clamp-3 text-sm">{item.description}</p>
                   )}
                   <div className="flex items-center justify-between pt-2">
-                    <span className="font-semibold">
-                      AUD ${(item.price_cents / 100).toFixed(2)}
+                    <span className="flex items-baseline gap-2">
+                      <span className="font-semibold">
+                        AUD ${(item.price_cents / 100).toFixed(2)}
+                      </span>
+                      {item.original_price_cents != null && (
+                        <span className="text-muted-foreground text-xs line-through">
+                          原價 ${(item.original_price_cents / 100).toFixed(2)}
+                        </span>
+                      )}
                     </span>
                     <SecondhandBuyButton itemId={item.id} />
                   </div>

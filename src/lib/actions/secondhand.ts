@@ -34,6 +34,7 @@ export async function upsertSecondhandItem(
     condition: v.condition,
     description: v.description || null,
     price_cents: v.priceCents,
+    original_price_cents: v.originalPriceCents ?? null,
     branch_id: v.branchId,
     status: v.status,
   };

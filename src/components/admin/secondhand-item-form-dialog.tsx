@@ -32,15 +32,17 @@ type Item = {
   condition: string;
   description: string | null;
   price_cents: number;
+  original_price_cents: number | null;
   branch_id: string | null;
   status: string;
 };
 
 const CONDITION_LABELS: Record<string, string> = {
-  like_new: "近全新",
-  good: "良好",
-  fair: "尚可",
-  well_loved: "使用痕跡明顯",
+  brand_new: "A 全新",
+  near_new: "B 近全新",
+  good: "C 良好",
+  fair: "D 普通",
+  poor: "E 差強人意",
 };
 
 const STATUS_LABELS: Record<string, string> = {
@@ -72,6 +74,7 @@ export function SecondhandItemFormDialog({
           condition: item.condition as SecondhandItemFormInput["condition"],
           description: item.description ?? "",
           priceCents: item.price_cents,
+          originalPriceCents: item.original_price_cents,
           branchId: item.branch_id,
           status: item.status as SecondhandItemFormInput["status"],
         }
@@ -82,10 +85,14 @@ export function SecondhandItemFormDialog({
           condition: "good",
           description: "",
           priceCents: 0,
+          originalPriceCents: null,
           branchId: null,
           status: "available",
         },
   );
+
+  const suggestedMaxCents =
+    form.originalPriceCents != null ? Math.round(form.originalPriceCents * 0.65) : null;
 
   async function handleSubmit() {
     setSubmitting(true);
@@ -173,7 +180,7 @@ export function SecondhandItemFormDialog({
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>價格（AUD 分）</Label>
+              <Label>售價（AUD 分）</Label>
               <Input
                 type="number"
                 min={0}
@@ -181,6 +188,26 @@ export function SecondhandItemFormDialog({
                 onChange={(e) => setForm({ ...form, priceCents: Number(e.target.value) })}
               />
             </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>原價（AUD 分，選填）</Label>
+            <Input
+              type="number"
+              min={0}
+              value={form.originalPriceCents ?? ""}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  originalPriceCents: e.target.value ? Number(e.target.value) : null,
+                })
+              }
+            />
+            {suggestedMaxCents != null && (
+              <p className="text-muted-foreground text-xs">
+                參考二手書業界慣例（售價不超過原價 65%），建議售價不超過 AUD $
+                {(suggestedMaxCents / 100).toFixed(2)}
+              </p>
+            )}
           </div>
           <div className="space-y-1.5">
             <Label>說明（選填）</Label>
