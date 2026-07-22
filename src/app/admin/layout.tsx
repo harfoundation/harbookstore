@@ -14,6 +14,7 @@ const ADMIN_NAV = [
   { href: "/admin/donations", label: "奉獻管理" },
   { href: "/admin/membership", label: "會員登記管理" },
   { href: "/admin/referrals", label: "會員推薦" },
+  { href: "/admin/points", label: "會員點數" },
   { href: "/admin/borrow-requests", label: "借閱申請" },
   { href: "/admin/courses", label: "課程" },
   { href: "/admin/articles", label: "書評文章" },

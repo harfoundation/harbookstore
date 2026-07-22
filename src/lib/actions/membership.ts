@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { sendMembershipConfirmedWhatsapp } from "@/lib/whatsapp/send";
+import { awardPoints } from "@/lib/actions/points";
 import {
   membershipRegistrationSchema,
   membershipFeeSettingsSchema,
@@ -64,6 +66,7 @@ export async function submitMembershipRegistration(
         registrationNumber: data.registration_number,
       });
     }
+    await awardPoints(createAdminClient(), user.id, "membership");
   }
 
   revalidatePath("/admin/membership");
@@ -90,7 +93,7 @@ export async function markMembershipRegistrationReceived(
   if (received) {
     const { data: registration } = await supabase
       .from("membership_registrations")
-      .select("registration_number, profiles(phone)")
+      .select("registration_number, profile_id, profiles(phone)")
       .eq("id", registrationId)
       .single();
     const profile = registration?.profiles as unknown as { phone: string | null } | null;
@@ -99,6 +102,9 @@ export async function markMembershipRegistrationReceived(
         to: profile.phone,
         registrationNumber: registration.registration_number,
       });
+    }
+    if (registration) {
+      await awardPoints(supabase, registration.profile_id, "membership");
     }
   }
 

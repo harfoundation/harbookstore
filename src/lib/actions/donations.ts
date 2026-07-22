@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardPoints } from "@/lib/actions/points";
 import {
   donationPledgeSchema,
   type DonationPledgeInput,
@@ -50,15 +51,21 @@ export async function markDonationReceived(
   received: boolean,
 ): Promise<UpdateActionResult> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data: pledge, error } = await supabase
     .from("donation_pledges")
     .update({
       status: received ? "confirmed" : "pending_review",
       payment_received_at: received ? new Date().toISOString() : null,
     })
-    .eq("id", pledgeId);
+    .eq("id", pledgeId)
+    .select("donor_id")
+    .single();
 
   if (error) return { success: false, error: error.message };
+
+  if (received && pledge?.donor_id) {
+    await awardPoints(supabase, pledge.donor_id, "donation");
+  }
 
   revalidatePath("/admin/donations");
   return { success: true };

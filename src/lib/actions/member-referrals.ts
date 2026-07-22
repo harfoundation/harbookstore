@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { awardPoints } from "@/lib/actions/points";
 import {
   memberReferralSchema,
   type MemberReferralInput,
@@ -40,12 +41,18 @@ export async function updateReferralStatus(
   status: "pending" | "joined" | "declined",
 ): Promise<UpdateActionResult> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("member_referrals")
     .update({ status })
-    .eq("id", referralId);
+    .eq("id", referralId)
+    .select("referred_by")
+    .single();
 
   if (error) return { success: false, error: error.message };
+
+  if (status === "joined" && data?.referred_by) {
+    await awardPoints(supabase, data.referred_by, "referral");
+  }
 
   revalidatePath("/admin/referrals");
   return { success: true };

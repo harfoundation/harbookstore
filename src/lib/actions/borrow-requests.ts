@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendBorrowApprovedWhatsapp } from "@/lib/whatsapp/send";
+import { awardPoints } from "@/lib/actions/points";
 import type { TablesUpdate } from "@/types/database.types";
 
 type ActionResult = { success: true } | { success: false; error: string };
@@ -121,6 +122,17 @@ export async function adminUpdateBorrowRequestStatus(
       if (profile?.phone && book?.title) {
         await sendBorrowApprovedWhatsapp({ to: profile.phone, bookTitle: book.title });
       }
+    }
+  }
+
+  if (parsed.data.status === "returned") {
+    const { data: request } = await supabase
+      .from("borrow_requests")
+      .select("requester_id")
+      .eq("id", parsed.data.borrowRequestId)
+      .single();
+    if (request) {
+      await awardPoints(supabase, request.requester_id, "borrow_returned");
     }
   }
 

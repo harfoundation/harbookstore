@@ -79,6 +79,13 @@ export type Database = {
             foreignKeyName: "articles_author_id_fkey"
             columns: ["author_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -172,6 +179,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "congregations"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "attendance_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "attendance_sessions_created_by_fkey"
@@ -338,6 +352,13 @@ export type Database = {
             foreignKeyName: "books_submitted_by_fkey"
             columns: ["submitted_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "books_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -400,6 +421,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "branches"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "borrow_requests_requester_id_fkey"
+            columns: ["requester_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "borrow_requests_requester_id_fkey"
@@ -494,6 +522,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_church_directory"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_announcements_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "church_announcements_created_by_fkey"
@@ -655,6 +690,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "public_church_directory"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "church_staff_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "church_staff_profile_id_fkey"
@@ -836,6 +878,13 @@ export type Database = {
             foreignKeyName: "course_progress_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "course_progress_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -873,6 +922,13 @@ export type Database = {
           parent_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "course_qa_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "course_qa_author_id_fkey"
             columns: ["author_id"]
@@ -963,6 +1019,13 @@ export type Database = {
             foreignKeyName: "courses_submitted_by_fkey"
             columns: ["submitted_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "courses_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1028,6 +1091,13 @@ export type Database = {
             foreignKeyName: "devotional_books_author_id_fkey"
             columns: ["author_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "devotional_books_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1080,6 +1150,13 @@ export type Database = {
           written_date?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "devotional_entries_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "devotional_entries_author_id_fkey"
             columns: ["author_id"]
@@ -1195,6 +1272,13 @@ export type Database = {
             foreignKeyName: "donation_pledges_donor_id_fkey"
             columns: ["donor_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "donation_pledges_donor_id_fkey"
+            columns: ["donor_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1247,6 +1331,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "events_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "events_created_by_fkey"
             columns: ["created_by"]
@@ -1332,6 +1423,65 @@ export type Database = {
           },
         ]
       }
+      member_points_ledger: {
+        Row: {
+          awarded_by: string | null
+          created_at: string
+          id: string
+          note: string | null
+          points: number
+          profile_id: string
+          reason: string
+        }
+        Insert: {
+          awarded_by?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points: number
+          profile_id: string
+          reason: string
+        }
+        Update: {
+          awarded_by?: string | null
+          created_at?: string
+          id?: string
+          note?: string | null
+          points?: number
+          profile_id?: string
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_points_ledger_awarded_by_fkey"
+            columns: ["awarded_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "member_points_ledger_awarded_by_fkey"
+            columns: ["awarded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_points_ledger_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "member_points_ledger_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_referrals: {
         Row: {
           created_at: string
@@ -1361,6 +1511,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "member_referrals_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "member_referrals_referred_by_fkey"
             columns: ["referred_by"]
@@ -1432,6 +1589,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "membership_registrations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "membership_registrations_profile_id_fkey"
             columns: ["profile_id"]
@@ -1576,6 +1740,13 @@ export type Database = {
             foreignKeyName: "orders_buyer_id_fkey"
             columns: ["buyer_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "orders_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1626,6 +1797,13 @@ export type Database = {
           tag_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profile_preference_tags_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "profile_preference_tags_profile_id_fkey"
             columns: ["profile_id"]
@@ -1717,8 +1895,22 @@ export type Database = {
             foreignKeyName: "reader_questions_responded_by_fkey"
             columns: ["responded_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "reader_questions_responded_by_fkey"
+            columns: ["responded_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reader_questions_submitter_id_fkey"
+            columns: ["submitter_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "reader_questions_submitter_id_fkey"
@@ -1767,6 +1959,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "books"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reading_shares_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "reading_shares_submitted_by_fkey"
@@ -1845,6 +2044,13 @@ export type Database = {
             foreignKeyName: "secondhand_items_submitted_by_fkey"
             columns: ["submitted_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "secondhand_items_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1910,8 +2116,22 @@ export type Database = {
             foreignKeyName: "service_bookings_customer_id_fkey"
             columns: ["customer_id"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "service_bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_bookings_responded_by_fkey"
+            columns: ["responded_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "service_bookings_responded_by_fkey"
@@ -2024,6 +2244,13 @@ export type Database = {
             foreignKeyName: "service_materials_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "service_materials_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2081,6 +2308,13 @@ export type Database = {
             foreignKeyName: "settlement_resources_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "settlement_resources_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -2127,6 +2361,13 @@ export type Database = {
           status?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "team_applications_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
           {
             foreignKeyName: "team_applications_applicant_id_fkey"
             columns: ["applicant_id"]
@@ -2184,8 +2425,22 @@ export type Database = {
             foreignKeyName: "whatsapp_contacts_imported_by_fkey"
             columns: ["imported_by"]
             isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "whatsapp_contacts_imported_by_fkey"
+            columns: ["imported_by"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_contacts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "whatsapp_contacts_profile_id_fkey"
@@ -2219,6 +2474,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "books"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wishlists_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
           },
           {
             foreignKeyName: "wishlists_profile_id_fkey"
@@ -2273,6 +2535,14 @@ export type Database = {
       }
     }
     Views: {
+      member_points_totals: {
+        Row: {
+          display_name: string | null
+          profile_id: string | null
+          total_points: number | null
+        }
+        Relationships: []
+      }
       public_answered_questions: {
         Row: {
           admin_response_body: string | null
