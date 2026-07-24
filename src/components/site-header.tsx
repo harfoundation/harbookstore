@@ -77,11 +77,11 @@ export function SiteHeader({
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
-            src="/brand/har-foundation-favicon.png"
-            alt="Har Foundation"
+            src="/brand/har-book-club-icon.png"
+            alt="山書坊 Har Book Club"
             width={32}
-            height={32}
-            className="h-7 w-7 rounded"
+            height={30}
+            className="h-7 w-auto"
             priority
           />
           <span className="notranslate text-lg font-bold whitespace-nowrap" translate="no">
