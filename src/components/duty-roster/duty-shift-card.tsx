@@ -2,94 +2,65 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { claimDutyShift, releaseDutyShift } from "@/lib/actions/duty-shifts";
 
-export function DutyShiftCard({
+export function DutyHourSlot({
   shiftId,
-  dateLabel,
-  timeLabel,
-  branchLabel,
   assigneeName,
   isAssigned,
   isMine,
-  notes,
 }: {
   shiftId: string;
-  dateLabel: string;
-  timeLabel: string;
-  branchLabel: string | null;
   assigneeName: string | null;
   isAssigned: boolean;
   isMine: boolean;
-  notes: string | null;
 }) {
   const [isPending, startTransition] = useTransition();
   const [optimisticTaken, setOptimisticTaken] = useState(isAssigned);
 
   const taken = optimisticTaken || isAssigned;
 
-  return (
-    <Card>
-      <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4">
-        <div className="space-y-1">
-          <p className="font-medium">
-            {dateLabel} {timeLabel}
-          </p>
-          <div className="flex flex-wrap items-center gap-2 text-sm">
-            {branchLabel && <Badge variant="secondary">{branchLabel}</Badge>}
-            {taken ? (
-              <span className={isMine ? "font-medium" : "text-muted-foreground"}>
-                {isMine ? "由你認領" : `已由 ${assigneeName ?? "同工"} 認領`}
-              </span>
-            ) : (
-              <span className="text-muted-foreground">尚未認領</span>
-            )}
-          </div>
-          {notes && <p className="text-muted-foreground text-sm">{notes}</p>}
-        </div>
+  function handleClick() {
+    if (isPending) return;
+    startTransition(async () => {
+      if (isMine) {
+        const result = await releaseDutyShift(shiftId);
+        if (!result.success) {
+          toast.error(result.error);
+          return;
+        }
+        setOptimisticTaken(false);
+        toast.success("已取消認領");
+        return;
+      }
+      if (taken) return;
+      const result = await claimDutyShift(shiftId);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      setOptimisticTaken(true);
+      toast.success("已認領此班次");
+    });
+  }
 
-        {isMine ? (
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isPending}
-            onClick={() => {
-              startTransition(async () => {
-                const result = await releaseDutyShift(shiftId);
-                if (!result.success) {
-                  toast.error(result.error);
-                  return;
-                }
-                setOptimisticTaken(false);
-                toast.success("已取消認領");
-              });
-            }}
-          >
-            取消認領
-          </Button>
-        ) : !taken ? (
-          <Button
-            size="sm"
-            disabled={isPending}
-            onClick={() => {
-              startTransition(async () => {
-                const result = await claimDutyShift(shiftId);
-                if (!result.success) {
-                  toast.error(result.error);
-                  return;
-                }
-                setOptimisticTaken(true);
-                toast.success("已認領此班次");
-              });
-            }}
-          >
-            認領此班次
-          </Button>
-        ) : null}
-      </CardContent>
-    </Card>
+  return (
+    <button
+      type="button"
+      disabled={isPending || (taken && !isMine)}
+      onClick={handleClick}
+      className={cn(
+        "flex w-full min-w-20 items-center justify-center rounded-lg border px-2 py-2 text-center text-xs transition-colors",
+        isMine
+          ? "border-primary bg-primary/10 hover:bg-primary/15 text-primary font-medium"
+          : taken
+            ? "bg-muted text-muted-foreground border-transparent"
+            : "text-muted-foreground hover:border-primary/50 border-dashed",
+        !taken || isMine ? "cursor-pointer" : "cursor-default",
+      )}
+    >
+      {isMine ? "你已認領" : taken ? (assigneeName ?? "同工") : "認領"}
+    </button>
   );
 }

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { DUTY_DAYS, DUTY_SLOTS } from "@/lib/duty-roster-config";
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -76,12 +77,6 @@ export async function deleteDutyShift(shiftId: string): Promise<ActionResult> {
   return { success: true };
 }
 
-const DUTY_DAYS = [2, 3, 4]; // Tue, Wed, Thu
-const DUTY_SLOTS = [
-  { start: "10:00:00", end: "13:00:00" },
-  { start: "13:00:00", end: "17:00:00" },
-];
-
 function buildUpcomingDutyDates(weeks: number): string[] {
   const dates: string[] = [];
   const today = new Date();
@@ -93,13 +88,10 @@ function buildUpcomingDutyDates(weeks: number): string[] {
   return dates;
 }
 
-/** Ensures the standard Tue/Wed/Thu morning (10-1) and afternoon (1-5) shifts
- * exist for the next N weeks, inserting only the date+slot combos that don't
- * already have a row. Callable by any signed-in user (not just staff) — the
- * actual write uses an admin client since the template is fixed/hardcoded
- * and safe, but we still require a real session so anonymous visitors can't
- * trigger it. */
-export async function ensureUpcomingDutyShifts(
+/** Core sync logic shared by both exported entry points below — does not
+ * call revalidatePath, since Next.js forbids that when invoked during a
+ * Server Component's render (which is how the public page uses this). */
+async function syncUpcomingDutyShifts(
   weeks: number,
   branchId: string | null,
 ): Promise<ActionResult> {
@@ -141,7 +133,36 @@ export async function ensureUpcomingDutyShifts(
   const { error: insertError } = await admin.from("duty_shifts").insert(missing);
   if (insertError) return { success: false, error: insertError.message };
 
-  revalidatePath("/duty-roster");
-  revalidatePath("/admin/duty-roster");
   return { success: true };
+}
+
+/** Ensures the standard Tue/Wed/Thu hourly shifts (10am-5pm, one row per
+ * hour) exist for the next N weeks, inserting only the date+slot combos that
+ * don't already have a row. Callable by any signed-in user (not just staff) — the
+ * actual write uses an admin client since the template is fixed/hardcoded
+ * and safe, but we still require a real session so anonymous visitors can't
+ * trigger it. Use this from client-triggered calls (e.g. the admin's
+ * "generate" button) — it revalidates both roster pages afterward. */
+export async function ensureUpcomingDutyShifts(
+  weeks: number,
+  branchId: string | null,
+): Promise<ActionResult> {
+  const result = await syncUpcomingDutyShifts(weeks, branchId);
+  if (result.success) {
+    revalidatePath("/duty-roster");
+    revalidatePath("/admin/duty-roster");
+  }
+  return result;
+}
+
+/** Same as ensureUpcomingDutyShifts but without revalidatePath — use this
+ * when calling directly from a Server Component's render body (the public
+ * roster page does this on every visit), since revalidatePath is both
+ * unnecessary there (the page is already force-dynamic) and unsupported
+ * mid-render. */
+export async function ensureUpcomingDutyShiftsQuiet(
+  weeks: number,
+  branchId: string | null,
+): Promise<ActionResult> {
+  return syncUpcomingDutyShifts(weeks, branchId);
 }

@@ -15,14 +15,15 @@ create policy "profiles_select_duty_shift_assignee"
     )
   );
 
--- Switch from a single fixed 10am-5pm slot to separate morning (10-1) and
--- afternoon (1-5) slots per day, per volunteer availability collected over
--- WhatsApp. Drop the future, still-unclaimed all-day rows so the app's
--- self-service generator (now producing two half-day slots per date)
--- replaces them on next load. Rows that are already claimed are left
--- untouched so no one's existing sign-up is disrupted.
+-- Switch from a single fixed 10am-5pm slot to one row per hour, so members
+-- can claim just the hours they're actually free (per volunteer availability
+-- collected over WhatsApp — 10-1, 1-5, 2-5, 3-5 etc all now compose from
+-- contiguous hourly claims). Drop future, still-unclaimed rows that aren't
+-- exactly an hour long — this covers both the original all-day rows and any
+-- half-day rows an earlier deploy of this feature may have already
+-- generated. Rows that are already claimed are left untouched so no one's
+-- existing sign-up is disrupted.
 delete from public.duty_shifts
 where shift_date >= current_date
-  and start_time = '10:00:00'
-  and end_time = '17:00:00'
-  and assigned_profile_id is null;
+  and assigned_profile_id is null
+  and end_time - start_time <> interval '1 hour';
