@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { adminAssignDutyShift, deleteDutyShift } from "@/lib/actions/duty-shifts";
+import { AssignDutyShiftDialog } from "@/components/admin/assign-duty-shift-dialog";
 
 export function DutyShiftRowActions({
   shiftId,
@@ -16,6 +17,7 @@ export function DutyShiftRowActions({
 
   return (
     <div className="flex gap-2">
+      <AssignDutyShiftDialog shiftId={shiftId} />
       {isAssigned && (
         <Button
           size="sm"

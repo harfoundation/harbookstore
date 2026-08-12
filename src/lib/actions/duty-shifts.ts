@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -79,42 +80,61 @@ const DUTY_DAYS = [2, 3, 4]; // Tue, Wed, Thu
 const DUTY_START = "10:00:00";
 const DUTY_END = "17:00:00";
 
-/** Generates the standard Tue/Wed/Thu 10am-5pm shifts for the next N weeks,
- * skipping any date that already has a shift row. */
-export async function generateUpcomingDutyShifts(
-  weeks: number,
-  branchId: string | null,
-): Promise<ActionResult> {
-  const supabase = await createClient();
-
-  const rows: {
-    branch_id: string | null;
-    shift_date: string;
-    start_time: string;
-    end_time: string;
-  }[] = [];
-
+function buildUpcomingDutyDates(weeks: number): string[] {
+  const dates: string[] = [];
   const today = new Date();
   for (let i = 0; i < weeks * 7; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    if (!DUTY_DAYS.includes(d.getDay())) continue;
-    rows.push({
+    if (DUTY_DAYS.includes(d.getDay())) dates.push(d.toISOString().slice(0, 10));
+  }
+  return dates;
+}
+
+/** Ensures the standard Tue/Wed/Thu 10am-5pm shifts exist for the next N
+ * weeks, inserting only the dates that don't already have a row. Callable by
+ * any signed-in user (not just staff) — the actual write uses an admin
+ * client since the template is fixed/hardcoded and safe, but we still
+ * require a real session so anonymous visitors can't trigger it. */
+export async function ensureUpcomingDutyShifts(
+  weeks: number,
+  branchId: string | null,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { success: false, error: "請先登入" };
+
+  const admin = createAdminClient();
+  const dates = buildUpcomingDutyDates(weeks);
+
+  let existingQuery = admin
+    .from("duty_shifts")
+    .select("shift_date")
+    .eq("start_time", DUTY_START)
+    .eq("end_time", DUTY_END)
+    .in("shift_date", dates);
+  existingQuery =
+    branchId === null
+      ? existingQuery.is("branch_id", null)
+      : existingQuery.eq("branch_id", branchId);
+  const { data: existing, error: existingError } = await existingQuery;
+  if (existingError) return { success: false, error: existingError.message };
+
+  const existingDates = new Set((existing ?? []).map((r) => r.shift_date));
+  const missing = dates.filter((d) => !existingDates.has(d));
+  if (missing.length === 0) return { success: true };
+
+  const { error: insertError } = await admin.from("duty_shifts").insert(
+    missing.map((shift_date) => ({
       branch_id: branchId,
-      shift_date: d.toISOString().slice(0, 10),
+      shift_date,
       start_time: DUTY_START,
       end_time: DUTY_END,
-    });
-  }
-
-  const { error } = await supabase
-    .from("duty_shifts")
-    .upsert(rows, {
-      onConflict: "branch_id,shift_date,start_time,end_time",
-      ignoreDuplicates: true,
-    });
-
-  if (error) return { success: false, error: error.message };
+    })),
+  );
+  if (insertError) return { success: false, error: insertError.message };
 
   revalidatePath("/duty-roster");
   revalidatePath("/admin/duty-roster");

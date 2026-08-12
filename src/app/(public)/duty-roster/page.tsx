@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-current-profile";
 import { DutyShiftCard } from "@/components/duty-roster/duty-shift-card";
+import { ensureUpcomingDutyShifts } from "@/lib/actions/duty-shifts";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "排班表" };
@@ -20,6 +21,10 @@ const WEEKDAY_LABEL: Record<number, string> = {
 export default async function DutyRosterPage() {
   const profile = await getCurrentProfile();
   if (!profile) redirect("/login?next=/duty-roster");
+
+  // Make sure the upcoming Tue/Wed/Thu slots exist so members can claim
+  // straight away — no admin action required to "open up" the roster.
+  await ensureUpcomingDutyShifts(8, null);
 
   const supabase = await createClient();
   const todayIso = new Date().toISOString().slice(0, 10);

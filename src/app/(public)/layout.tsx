@@ -11,7 +11,12 @@ export default async function PublicLayout({ children }: { children: React.React
       <SiteHeader
         user={
           profile
-            ? { id: profile.id, email: profile.email, displayName: profile.displayName }
+            ? {
+                id: profile.id,
+                email: profile.email,
+                displayName: profile.displayName,
+                role: profile.role,
+              }
             : null
         }
         isStaff={isStaffRole(profile?.role)}

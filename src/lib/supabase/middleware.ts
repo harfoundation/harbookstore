@@ -70,6 +70,7 @@ export async function updateSession(request: NextRequest) {
     "/auth/callback",
     "/robots.txt",
     "/sitemap.xml",
+    "/duty-roster",
   ];
   const PUBLIC_ALLOWED_PREFIXES = ["/articles", "/catalog", "/categories"];
   const isPublicPath =

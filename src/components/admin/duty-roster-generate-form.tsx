@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { generateUpcomingDutyShifts } from "@/lib/actions/duty-shifts";
+import { ensureUpcomingDutyShifts } from "@/lib/actions/duty-shifts";
 
 export function DutyRosterGenerateForm({
   branches,
@@ -49,7 +49,7 @@ export function DutyRosterGenerateForm({
         disabled={submitting}
         onClick={async () => {
           setSubmitting(true);
-          const result = await generateUpcomingDutyShifts(
+          const result = await ensureUpcomingDutyShifts(
             8,
             branchId === "none" ? null : branchId,
           );

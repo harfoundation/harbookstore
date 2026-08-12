@@ -44,14 +44,28 @@ const PUBLIC_NAV_HREFS = new Set([
   "/reading-shares",
   "/branches",
   "/join",
+  "/duty-roster",
 ]);
+
+const ROLE_LABEL: Record<string, string> = {
+  admin: "管理員",
+  committee: "委員",
+  instructor: "導師",
+  partner: "合作夥伴",
+  member: "會員",
+};
 
 export function SiteHeader({
   user,
   isStaff,
   isPartner,
 }: {
-  user: { id: string; email?: string; displayName: string | null } | null;
+  user: {
+    id: string;
+    email?: string;
+    displayName: string | null;
+    role?: string | null;
+  } | null;
   isStaff: boolean;
   isPartner?: boolean;
 }) {
@@ -119,6 +133,11 @@ export function SiteHeader({
             <DropdownMenu>
               <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
                 {user.displayName ?? user.email ?? "我的帳戶"}
+                {user.role && ROLE_LABEL[user.role] && (
+                  <span className="text-muted-foreground ml-1.5 text-xs">
+                    （{ROLE_LABEL[user.role]}）
+                  </span>
+                )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem render={<Link href="/profile" />}>
