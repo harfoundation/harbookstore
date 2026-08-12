@@ -77,8 +77,10 @@ export async function deleteDutyShift(shiftId: string): Promise<ActionResult> {
 }
 
 const DUTY_DAYS = [2, 3, 4]; // Tue, Wed, Thu
-const DUTY_START = "10:00:00";
-const DUTY_END = "17:00:00";
+const DUTY_SLOTS = [
+  { start: "10:00:00", end: "13:00:00" },
+  { start: "13:00:00", end: "17:00:00" },
+];
 
 function buildUpcomingDutyDates(weeks: number): string[] {
   const dates: string[] = [];
@@ -91,11 +93,12 @@ function buildUpcomingDutyDates(weeks: number): string[] {
   return dates;
 }
 
-/** Ensures the standard Tue/Wed/Thu 10am-5pm shifts exist for the next N
- * weeks, inserting only the dates that don't already have a row. Callable by
- * any signed-in user (not just staff) — the actual write uses an admin
- * client since the template is fixed/hardcoded and safe, but we still
- * require a real session so anonymous visitors can't trigger it. */
+/** Ensures the standard Tue/Wed/Thu morning (10-1) and afternoon (1-5) shifts
+ * exist for the next N weeks, inserting only the date+slot combos that don't
+ * already have a row. Callable by any signed-in user (not just staff) — the
+ * actual write uses an admin client since the template is fixed/hardcoded
+ * and safe, but we still require a real session so anonymous visitors can't
+ * trigger it. */
 export async function ensureUpcomingDutyShifts(
   weeks: number,
   branchId: string | null,
@@ -111,9 +114,7 @@ export async function ensureUpcomingDutyShifts(
 
   let existingQuery = admin
     .from("duty_shifts")
-    .select("shift_date")
-    .eq("start_time", DUTY_START)
-    .eq("end_time", DUTY_END)
+    .select("shift_date, start_time, end_time")
     .in("shift_date", dates);
   existingQuery =
     branchId === null
@@ -122,18 +123,22 @@ export async function ensureUpcomingDutyShifts(
   const { data: existing, error: existingError } = await existingQuery;
   if (existingError) return { success: false, error: existingError.message };
 
-  const existingDates = new Set((existing ?? []).map((r) => r.shift_date));
-  const missing = dates.filter((d) => !existingDates.has(d));
-  if (missing.length === 0) return { success: true };
-
-  const { error: insertError } = await admin.from("duty_shifts").insert(
-    missing.map((shift_date) => ({
+  const existingKeys = new Set(
+    (existing ?? []).map((r) => `${r.shift_date}|${r.start_time}|${r.end_time}`),
+  );
+  const missing = dates.flatMap((shift_date) =>
+    DUTY_SLOTS.filter(
+      (slot) => !existingKeys.has(`${shift_date}|${slot.start}|${slot.end}`),
+    ).map((slot) => ({
       branch_id: branchId,
       shift_date,
-      start_time: DUTY_START,
-      end_time: DUTY_END,
+      start_time: slot.start,
+      end_time: slot.end,
     })),
   );
+  if (missing.length === 0) return { success: true };
+
+  const { error: insertError } = await admin.from("duty_shifts").insert(missing);
   if (insertError) return { success: false, error: insertError.message };
 
   revalidatePath("/duty-roster");

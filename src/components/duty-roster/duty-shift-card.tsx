@@ -13,6 +13,7 @@ export function DutyShiftCard({
   timeLabel,
   branchLabel,
   assigneeName,
+  isAssigned,
   isMine,
   notes,
 }: {
@@ -21,13 +22,14 @@ export function DutyShiftCard({
   timeLabel: string;
   branchLabel: string | null;
   assigneeName: string | null;
+  isAssigned: boolean;
   isMine: boolean;
   notes: string | null;
 }) {
   const [isPending, startTransition] = useTransition();
-  const [optimisticTaken, setOptimisticTaken] = useState(!!assigneeName);
+  const [optimisticTaken, setOptimisticTaken] = useState(isAssigned);
 
-  const taken = optimisticTaken || !!assigneeName;
+  const taken = optimisticTaken || isAssigned;
 
   return (
     <Card>

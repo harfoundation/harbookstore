@@ -58,7 +58,7 @@ export function DutyRosterGenerateForm({
             toast.error(result.error);
             return;
           }
-          toast.success("已產生未來 8 週的週二至週四 10am–5pm 班次");
+          toast.success("已產生未來 8 週的週二至週四上午／下午班次");
         }}
       >
         {submitting ? "產生中…" : "產生未來 8 週班次"}

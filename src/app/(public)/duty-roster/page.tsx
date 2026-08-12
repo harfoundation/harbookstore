@@ -56,14 +56,16 @@ export default async function DutyRosterPage() {
               display_name: string | null;
             } | null;
             const weekday = WEEKDAY_LABEL[new Date(shift.shift_date).getDay()];
+            const slotLabel = shift.start_time < "12:00:00" ? "上午" : "下午";
             return (
               <DutyShiftCard
                 key={shift.id}
                 shiftId={shift.id}
-                dateLabel={`${shift.shift_date}（${weekday}）`}
+                dateLabel={`${shift.shift_date}（${weekday}）${slotLabel}`}
                 timeLabel={`${shift.start_time.slice(0, 5)}–${shift.end_time.slice(0, 5)}`}
                 branchLabel={branch?.suburb ?? null}
                 assigneeName={assignee?.display_name ?? null}
+                isAssigned={shift.assigned_profile_id !== null}
                 isMine={shift.assigned_profile_id === profile.id}
                 notes={shift.notes}
               />
