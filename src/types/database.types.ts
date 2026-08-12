@@ -1284,6 +1284,64 @@ export type Database = {
           },
         ]
       }
+      duty_shifts: {
+        Row: {
+          assigned_profile_id: string | null
+          branch_id: string | null
+          created_at: string
+          end_time: string
+          id: string
+          notes: string | null
+          shift_date: string
+          start_time: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_profile_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          end_time: string
+          id?: string
+          notes?: string | null
+          shift_date: string
+          start_time: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_profile_id?: string | null
+          branch_id?: string | null
+          created_at?: string
+          end_time?: string
+          id?: string
+          notes?: string | null
+          shift_date?: string
+          start_time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duty_shifts_assigned_profile_id_fkey"
+            columns: ["assigned_profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "duty_shifts_assigned_profile_id_fkey"
+            columns: ["assigned_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "duty_shifts_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           body_markdown: string | null

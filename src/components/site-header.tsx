@@ -29,6 +29,7 @@ const NAV_LINKS = [
   { href: "/secondhand", label: "二手品" },
   { href: "/bookings", label: "線下預約" },
   { href: "/branches", label: "分店" },
+  { href: "/duty-roster", label: "排班表" },
   { href: "/join", label: "加入我們" },
   { href: "/donate", label: "奉獻支持" },
   { href: "/membership", label: "會員登記" },
