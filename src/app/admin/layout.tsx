@@ -22,6 +22,7 @@ const ADMIN_NAV = [
   { href: "/admin/reader-questions", label: "人生解惑" },
   { href: "/admin/branches", label: "分店" },
   { href: "/admin/duty-roster", label: "排班表" },
+  { href: "/admin/live-translate", label: "即時翻譯" },
   { href: "/admin/bookable-services", label: "可預約服務" },
   { href: "/admin/bookings", label: "預約管理" },
   { href: "/admin/secondhand", label: "二手商品" },
