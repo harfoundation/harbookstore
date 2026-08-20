@@ -18,6 +18,8 @@ export function AddToCartButton({
     group_buy_price_cents?: number | null;
     group_buy_min_qty?: number | null;
     procurement_status: string;
+    category_id?: string | null;
+    poster_number?: number | null;
   };
 }) {
   const { addItem } = useCart();
@@ -61,6 +63,8 @@ export function AddToCartButton({
               priceCents: book.price_cents,
               groupBuyPriceCents: book.group_buy_price_cents ?? null,
               groupBuyMinQty: book.group_buy_min_qty ?? null,
+              categoryId: book.category_id ?? null,
+              posterNumber: book.poster_number ?? null,
             },
             quantity,
           );

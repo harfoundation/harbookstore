@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { calculateOrderSubtotalCents } from "@/lib/validation/order.schema";
+import { computeSeriesDiscounts } from "@/lib/pricing/series-discount";
 import { sendOrderConfirmationEmail } from "@/lib/email/send";
 import { sendOrderConfirmedWhatsapp } from "@/lib/whatsapp/send";
 import type { TablesUpdate } from "@/types/database.types";
@@ -58,6 +59,8 @@ type BookPricing = {
   priceCents: number;
   groupBuyPriceCents: number | null;
   groupBuyMinQty: number | null;
+  categoryId: string | null;
+  posterNumber: number | null;
 };
 
 /** Looks up current prices server-side — never trusts client-submitted prices. */
@@ -67,7 +70,7 @@ async function fetchBookPrices(
 ) {
   const { data, error } = await supabase
     .from("books")
-    .select("id, price_cents, group_buy_price_cents, group_buy_min_qty")
+    .select("id, price_cents, group_buy_price_cents, group_buy_min_qty, category_id, poster_number")
     .in("id", bookIds);
   if (error) throw error;
   return new Map<string, BookPricing>(
@@ -77,9 +80,26 @@ async function fetchBookPrices(
         priceCents: b.price_cents ?? 0,
         groupBuyPriceCents: b.group_buy_price_cents,
         groupBuyMinQty: b.group_buy_min_qty,
+        categoryId: b.category_id,
+        posterNumber: b.poster_number,
       },
     ]),
   );
+}
+
+/** Total active books in the curated 50-book series — the denominator for
+ * the "whole set" bundle discount. Queried fresh so it stays correct if the
+ * catalog changes, rather than hardcoding 50. */
+async function fetchActiveSeriesBookCount(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<number> {
+  const { count, error } = await supabase
+    .from("books")
+    .select("id", { count: "exact", head: true })
+    .eq("is_active", true)
+    .not("poster_number", "is", null);
+  if (error) throw error;
+  return count ?? 0;
 }
 
 /** Retail/gift orders unlock the group-buy price once quantity hits the book's minimum. */
@@ -105,15 +125,33 @@ export async function createRetailOrder(
   if (!user) return { success: false, error: "請先登入" };
 
   const { items, paymentMethod, branchId, notes } = parsed.data;
-  const priceMap = await fetchBookPrices(
-    supabase,
-    items.map((i) => i.bookId),
+  const [priceMap, totalSeriesBookCount] = await Promise.all([
+    fetchBookPrices(
+      supabase,
+      items.map((i) => i.bookId),
+    ),
+    fetchActiveSeriesBookCount(supabase),
+  ]);
+  const discounts = computeSeriesDiscounts(
+    items.map((i) => {
+      const pricing = priceMap.get(i.bookId);
+      return {
+        bookId: i.bookId,
+        categoryId: pricing?.categoryId ?? null,
+        posterNumber: pricing?.posterNumber ?? null,
+      };
+    }),
+    totalSeriesBookCount,
   );
-  const orderItems = items.map((i) => ({
-    book_id: i.bookId,
-    quantity: i.quantity,
-    unit_price_cents: resolveUnitPriceCents(priceMap.get(i.bookId), i.quantity),
-  }));
+  const orderItems = items.map((i) => {
+    const baseUnitPriceCents = resolveUnitPriceCents(priceMap.get(i.bookId), i.quantity);
+    const multiplier = discounts.get(i.bookId)?.multiplier ?? 1;
+    return {
+      book_id: i.bookId,
+      quantity: i.quantity,
+      unit_price_cents: Math.round(baseUnitPriceCents * multiplier),
+    };
+  });
   const subtotalCents = calculateOrderSubtotalCents(
     orderItems.map((i) => ({ quantity: i.quantity, unitPriceCents: i.unit_price_cents })),
   );

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useCart, effectiveUnitPriceCents } from "@/components/cart/cart-provider";
+import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -39,7 +39,7 @@ function QuantityInput({
 }
 
 export default function CartPage() {
-  const { items, subtotalCents, setQuantity, removeItem } = useCart();
+  const { items, subtotalCents, itemPricing, setQuantity, removeItem } = useCart();
 
   if (items.length === 0) {
     return (
@@ -57,9 +57,12 @@ export default function CartPage() {
 
       <div className="divide-y rounded-lg border">
         {items.map((item) => {
-          const unitPriceCents = effectiveUnitPriceCents(item);
+          const pricing = itemPricing.get(item.bookId);
+          const unitPriceCents = pricing?.unitPriceCents ?? 0;
           const isGroupBuyPrice =
-            item.groupBuyPriceCents != null && unitPriceCents === item.groupBuyPriceCents;
+            item.groupBuyPriceCents != null &&
+            !pricing?.discountLabel &&
+            unitPriceCents === item.groupBuyPriceCents;
           return (
             <div key={item.bookId} className="flex items-center gap-4 p-4">
               <div className="flex-1">
@@ -67,11 +70,15 @@ export default function CartPage() {
                 {item.author && (
                   <p className="text-muted-foreground text-sm">{item.author}</p>
                 )}
+                {pricing?.discountLabel && (
+                  <p className="text-sm text-green-700">已套用優惠：{pricing.discountLabel}</p>
+                )}
                 {isGroupBuyPrice ? (
                   <p className="text-sm text-green-700">
                     已達團購最低件數，套用團購價 AUD ${(item.groupBuyPriceCents! / 100).toFixed(2)}
                   </p>
                 ) : (
+                  !pricing?.discountLabel &&
                   item.groupBuyMinQty != null &&
                   item.groupBuyPriceCents != null && (
                     <p className="text-muted-foreground text-sm">

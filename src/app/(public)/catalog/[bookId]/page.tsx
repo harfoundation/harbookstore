@@ -36,7 +36,7 @@ export default async function BookDetailPage({
       supabase
         .from("books")
         .select(
-          "id, title, author, translator, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, is_lendable, cover_image_url, ebook_url, category_id, book_categories(slug, name_zh)",
+          "id, title, author, translator, description, price_cents, group_buy_price_cents, group_buy_min_qty, procurement_status, is_lendable, cover_image_url, ebook_url, category_id, poster_number, book_categories(slug, name_zh)",
         )
         .eq("id", bookId)
         .single(),

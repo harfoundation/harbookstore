@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useCart, effectiveUnitPriceCents } from "@/components/cart/cart-provider";
+import { useCart } from "@/components/cart/cart-provider";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +21,7 @@ type Branch = { id: string; suburb: string; city: string; state: string };
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, subtotalCents, clear } = useCart();
+  const { items, subtotalCents, itemPricing, clear } = useCart();
   const [paymentMethod, setPaymentMethod] = useState<"bank_transfer" | "in_person">(
     "bank_transfer",
   );
@@ -78,16 +78,22 @@ export default function CheckoutPage() {
       <h1 className="text-2xl font-bold">結帳</h1>
 
       <div className="space-y-2 rounded-lg border p-4">
-        {items.map((item) => (
-          <div key={item.bookId} className="flex justify-between text-sm">
-            <span>
-              {item.title} × {item.quantity}
-            </span>
-            <span>
-              AUD ${((effectiveUnitPriceCents(item) * item.quantity) / 100).toFixed(2)}
-            </span>
-          </div>
-        ))}
+        {items.map((item) => {
+          const pricing = itemPricing.get(item.bookId);
+          return (
+            <div key={item.bookId} className="flex items-center justify-between text-sm">
+              <span>
+                {item.title} × {item.quantity}
+                {pricing?.discountLabel && (
+                  <span className="ml-1.5 text-xs text-green-700">
+                    （{pricing.discountLabel}）
+                  </span>
+                )}
+              </span>
+              <span>AUD ${(((pricing?.unitPriceCents ?? 0) * item.quantity) / 100).toFixed(2)}</span>
+            </div>
+          );
+        })}
         <div className="flex justify-between border-t pt-2 font-semibold">
           <span>總計</span>
           <span>AUD ${(subtotalCents / 100).toFixed(2)}</span>
