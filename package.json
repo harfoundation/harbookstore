@@ -21,7 +21,8 @@
     "db:seed:books": "tsx scripts/seed/import-books.ts",
     "db:seed:devotional": "tsx scripts/seed/import-devotional-book.ts",
     "pdf:devotional": "tsx scripts/pdf/generate-devotional-pdf.ts",
-    "db:seed:attendance": "tsx scripts/seed/import-attendance-roster.ts"
+    "db:seed:attendance": "tsx scripts/seed/import-attendance-roster.ts",
+    "db:seed:creative-week": "tsx scripts/seed/import-creative-week.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

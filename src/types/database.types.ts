@@ -2435,6 +2435,96 @@ export type Database = {
           },
         ]
       }
+      translation_captions: {
+        Row: {
+          created_at: string
+          id: string
+          session_id: string
+          source_text: string
+          translated_text: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          session_id: string
+          source_text: string
+          translated_text: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          session_id?: string
+          source_text?: string
+          translated_text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_captions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "translation_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      translation_sessions: {
+        Row: {
+          branch_id: string | null
+          created_at: string
+          created_by: string | null
+          ended_at: string | null
+          id: string
+          source_lang: string
+          status: string
+          target_lang: string
+          title: string
+        }
+        Insert: {
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ended_at?: string | null
+          id?: string
+          source_lang: string
+          status?: string
+          target_lang: string
+          title: string
+        }
+        Update: {
+          branch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ended_at?: string | null
+          id?: string
+          source_lang?: string
+          status?: string
+          target_lang?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_sessions_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "translation_sessions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       whatsapp_contacts: {
         Row: {
           created_at: string
