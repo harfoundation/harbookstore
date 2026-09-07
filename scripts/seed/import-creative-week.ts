@@ -7,16 +7,25 @@
  * Re-run any time to sync copy changes — it matches on the unique `slug`.
  *
  * Usage: pnpm db:seed:creative-week
- *   (reads NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY from .env.local)
+ *   Reads NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY from .env.local.
+ *   To target production without editing .env.local, drop the prod values in
+ *   .env.production.local (e.g. `vercel env pull .env.production.local
+ *   --environment=production`) — it is gitignored and overrides .env.local here.
  */
 import { config } from "dotenv";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-config({ path: path.join(__dirname, "../../.env.local") });
+const root = path.join(__dirname, "../..");
+config({ path: path.join(root, ".env.local") });
+const prodEnv = path.join(root, ".env.production.local");
+if (existsSync(prodEnv)) {
+  config({ path: prodEnv, override: true });
+  console.log("Using overrides from .env.production.local");
+}
 
 const meta: {
   slug: string;
