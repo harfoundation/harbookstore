@@ -1,7 +1,7 @@
 /**
  * Idempotent import of a devotional book (volumes + numbered entries) from
  * a structured JSON file into Supabase. Currently used for 傳道心聲/Pastoral
- * Voice (by Keith Lam), parsed from the author's original .docx manuscript.
+ * Voice (by Keith Lim), parsed from the author's original .docx manuscript.
  *
  * Usage: pnpm db:seed:devotional -- scripts/seed/pastoral-voice-book.json
  */
