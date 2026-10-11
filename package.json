@@ -22,9 +22,11 @@
     "db:seed:devotional": "tsx scripts/seed/import-devotional-book.ts",
     "pdf:devotional": "tsx scripts/pdf/generate-devotional-pdf.ts",
     "db:seed:attendance": "tsx scripts/seed/import-attendance-roster.ts",
-    "db:seed:creative-week": "tsx scripts/seed/import-creative-week.ts"
+    "db:seed:creative-week": "tsx scripts/seed/import-creative-week.ts",
+    "db:seed:theology": "tsx scripts/seed/import-theology-source.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
     "@base-ui/react": "^1.6.0",
     "@hookform/resolvers": "^5.4.0",
     "@react-email/components": "^1.0.12",

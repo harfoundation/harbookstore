@@ -21,6 +21,7 @@ const NAV_LINKS = [
   { href: "/events", label: "活動公告" },
   { href: "/catalog", label: "書目" },
   { href: "/courses", label: "課程" },
+  { href: "/tutor", label: "HAR AI 神學導師" },
   { href: "/articles", label: "書評" },
   { href: "/reading-shares", label: "讀書分享" },
   { href: "/devotionals", label: "靈修文集" },

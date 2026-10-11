@@ -34,6 +34,156 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_tutor_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          profile_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          profile_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          profile_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tutor_conversations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_conversations_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_tutor_members: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tutor_members_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_members_granted_by_fkey"
+            columns: ["granted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_tutor_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          input_tokens: number | null
+          output_tokens: number | null
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_note: string | null
+          role: string
+          sources: Json
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          role: string
+          sources?: Json
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          input_tokens?: number | null
+          output_tokens?: number | null
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          role?: string
+          sources?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_tutor_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "ai_tutor_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_messages_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "ai_tutor_messages_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           author_id: string | null
@@ -2435,6 +2585,86 @@ export type Database = {
           },
         ]
       }
+      theology_chunks: {
+        Row: {
+          book: string | null
+          chapter: number | null
+          content: string
+          id: number
+          ordinal: number
+          ref_label: string
+          source_id: string
+          verse: number | null
+        }
+        Insert: {
+          book?: string | null
+          chapter?: number | null
+          content: string
+          id?: never
+          ordinal: number
+          ref_label: string
+          source_id: string
+          verse?: number | null
+        }
+        Update: {
+          book?: string | null
+          chapter?: number | null
+          content?: string
+          id?: never
+          ordinal?: number
+          ref_label?: string
+          source_id?: string
+          verse?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "theology_chunks_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "theology_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      theology_sources: {
+        Row: {
+          author: string | null
+          collection: string
+          created_at: string
+          id: string
+          is_published: boolean
+          kind: string
+          language: string
+          license: string
+          license_note: string | null
+          title: string
+        }
+        Insert: {
+          author?: string | null
+          collection?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          kind: string
+          language?: string
+          license: string
+          license_note?: string | null
+          title: string
+        }
+        Update: {
+          author?: string | null
+          collection?: string
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          kind?: string
+          language?: string
+          license?: string
+          license_note?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       translation_captions: {
         Row: {
           created_at: string
@@ -2738,6 +2968,7 @@ export type Database = {
       }
     }
     Functions: {
+      ai_tutor_grant_by_email: { Args: { p_email: string }; Returns: string }
       is_admin: { Args: { uid: string }; Returns: boolean }
       is_church_staff: {
         Args: { target_church_id: string; uid: string }
@@ -2746,6 +2977,17 @@ export type Database = {
       is_confirmed_member: { Args: { uid: string }; Returns: boolean }
       is_partner: { Args: { uid: string }; Returns: boolean }
       is_staff: { Args: { uid: string }; Returns: boolean }
+      search_theology_chunks: {
+        Args: { max_results?: number; only_kind?: string; terms: string[] }
+        Returns: {
+          content: string
+          id: number
+          ref_label: string
+          score: number
+          source_author: string
+          source_title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
