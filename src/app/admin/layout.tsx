@@ -17,6 +17,7 @@ const ADMIN_NAV = [
   { href: "/admin/points", label: "會員點數" },
   { href: "/admin/borrow-requests", label: "借閱申請" },
   { href: "/admin/courses", label: "課程" },
+  { href: "/admin/ai-tutor", label: "HAR AI 神學導師" },
   { href: "/admin/articles", label: "書評文章" },
   { href: "/admin/devotionals", label: "靈修文集" },
   { href: "/admin/reader-questions", label: "人生解惑" },

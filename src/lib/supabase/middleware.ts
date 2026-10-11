@@ -71,6 +71,9 @@ export async function updateSession(request: NextRequest) {
     "/robots.txt",
     "/sitemap.xml",
     "/duty-roster",
+    // Invite-only AI tutor: the page itself checks ai_tutor_members, and the
+    // link is shared with invited students directly rather than via the nav.
+    "/tutor",
   ];
   const PUBLIC_ALLOWED_PREFIXES = ["/articles", "/catalog", "/categories", "/live-translate"];
   const isPublicPath =
