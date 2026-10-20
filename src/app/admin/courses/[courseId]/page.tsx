@@ -11,6 +11,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { LessonFormDialog } from "@/components/admin/lesson-form-dialog";
+import {
+  LessonTranscriptsDialog,
+  type AdminTranscript,
+} from "@/components/admin/lesson-transcripts-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +39,23 @@ export default async function AdminCourseLessonsPage({
     .select("id, course_id, title, video_url, duration_seconds, sort_order, is_published")
     .eq("course_id", courseId)
     .order("sort_order");
+
+  const { data: transcriptRows } = await supabase
+    .from("lesson_transcripts")
+    .select("lesson_id, language, is_original, content")
+    .in(
+      "lesson_id",
+      (lessons ?? []).map((l) => l.id),
+    );
+  const transcriptsFor = (lessonId: string): AdminTranscript[] =>
+    (transcriptRows ?? [])
+      .filter((t) => t.lesson_id === lessonId)
+      .map((t) => ({
+        language: t.language as AdminTranscript["language"],
+        is_original: t.is_original,
+        content: t.content,
+      }))
+      .sort((a, b) => Number(b.is_original) - Number(a.is_original));
 
   return (
     <div className="space-y-6">
@@ -62,7 +83,18 @@ export default async function AdminCourseLessonsPage({
                   {lesson.is_published ? "已發布" : "草稿"}
                 </Badge>
               </TableCell>
-              <TableCell className="flex justify-end">
+              <TableCell className="flex justify-end gap-2">
+                <LessonTranscriptsDialog
+                  courseId={courseId}
+                  lessonId={lesson.id}
+                  lessonTitle={lesson.title}
+                  transcripts={transcriptsFor(lesson.id)}
+                  trigger={
+                    <Button variant="outline" size="sm">
+                      講稿（{transcriptsFor(lesson.id).length}）
+                    </Button>
+                  }
+                />
                 <LessonFormDialog
                   courseId={courseId}
                   lesson={lesson}

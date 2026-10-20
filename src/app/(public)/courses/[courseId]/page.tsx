@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-current-profile";
 import { Badge } from "@/components/ui/badge";
+import { CourseEnrollCard } from "@/components/courses/course-enroll-card";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,9 @@ export default async function CourseDetailPage({
 
   const { data: course } = await supabase
     .from("courses")
-    .select("id, title, description, instructor_name")
+    .select(
+      "id, title, description, instructor_name, term_label, price_cents, training_fee_cents, book_fee_cents, instructor_fee_cents",
+    )
     .eq("id", courseId)
     .single();
 
@@ -41,6 +44,17 @@ export default async function CourseDetailPage({
         )
     : { data: [] };
 
+  const { data: existingEnrollment } = profile
+    ? await supabase
+        .from("order_items")
+        .select("orders!inner(order_number, buyer_id, status)")
+        .eq("course_id", courseId)
+        .eq("orders.buyer_id", profile.id)
+        .neq("orders.status", "cancelled")
+        .limit(1)
+        .maybeSingle()
+    : { data: null };
+
   const completedLessonIds = new Set(
     (progress ?? []).filter((p) => p.completed).map((p) => p.lesson_id),
   );
@@ -52,10 +66,25 @@ export default async function CourseDetailPage({
         {course.instructor_name && (
           <p className="text-muted-foreground mt-1">講師：{course.instructor_name}</p>
         )}
+        {course.term_label && (
+          <p className="text-muted-foreground mt-1 text-sm">期限：{course.term_label}</p>
+        )}
         {course.description && (
           <p className="mt-2 text-sm leading-relaxed">{course.description}</p>
         )}
       </div>
+
+      <CourseEnrollCard
+        courseId={courseId}
+        fees={{
+          priceCents: course.price_cents,
+          trainingFeeCents: course.training_fee_cents,
+          bookFeeCents: course.book_fee_cents,
+          instructorFeeCents: course.instructor_fee_cents,
+        }}
+        isLoggedIn={!!profile}
+        existingOrderNumber={existingEnrollment?.orders.order_number ?? null}
+      />
 
       <div className="divide-y rounded-lg border">
         {(lessons ?? []).map((lesson, idx) => (

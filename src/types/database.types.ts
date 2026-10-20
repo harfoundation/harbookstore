@@ -1113,10 +1113,12 @@ export type Database = {
         Row: {
           accreditation_note: string | null
           approval_status: string
+          book_fee_cents: number | null
           cover_image_url: string | null
           created_at: string
           description: string | null
           id: string
+          instructor_fee_cents: number | null
           instructor_name: string | null
           is_published: boolean
           price_cents: number | null
@@ -1127,14 +1129,17 @@ export type Database = {
           submitted_by: string | null
           term_label: string | null
           title: string
+          training_fee_cents: number | null
         }
         Insert: {
           accreditation_note?: string | null
           approval_status?: string
+          book_fee_cents?: number | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          instructor_fee_cents?: number | null
           instructor_name?: string | null
           is_published?: boolean
           price_cents?: number | null
@@ -1145,14 +1150,17 @@ export type Database = {
           submitted_by?: string | null
           term_label?: string | null
           title: string
+          training_fee_cents?: number | null
         }
         Update: {
           accreditation_note?: string | null
           approval_status?: string
+          book_fee_cents?: number | null
           cover_image_url?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          instructor_fee_cents?: number | null
           instructor_name?: string | null
           is_published?: boolean
           price_cents?: number | null
@@ -1163,6 +1171,7 @@ export type Database = {
           submitted_by?: string | null
           term_label?: string | null
           title?: string
+          training_fee_cents?: number | null
         }
         Relationships: [
           {
@@ -1593,6 +1602,38 @@ export type Database = {
           },
         ]
       }
+      lesson_transcripts: {
+        Row: {
+          content: string
+          is_original: boolean
+          language: string
+          lesson_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          is_original?: boolean
+          language: string
+          lesson_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          is_original?: boolean
+          language?: string
+          lesson_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_transcripts_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lessons: {
         Row: {
           course_id: string
@@ -1817,6 +1858,7 @@ export type Database = {
         Row: {
           book_id: string | null
           course_id: string | null
+          fee_breakdown: Json | null
           id: string
           order_id: string
           quantity: number
@@ -1826,6 +1868,7 @@ export type Database = {
         Insert: {
           book_id?: string | null
           course_id?: string | null
+          fee_breakdown?: Json | null
           id?: string
           order_id: string
           quantity?: number
@@ -1835,6 +1878,7 @@ export type Database = {
         Update: {
           book_id?: string | null
           course_id?: string | null
+          fee_breakdown?: Json | null
           id?: string
           order_id?: string
           quantity?: number

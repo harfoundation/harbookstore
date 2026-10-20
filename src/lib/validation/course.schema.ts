@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRANSCRIPT_LANGUAGE_CODES } from "@/lib/courses/transcript-languages";
 
 export const serviceCategories = [
   "course",
@@ -28,6 +29,11 @@ export const courseFormSchema = z.object({
   isPublished: z.boolean(),
   sortOrder: z.number().int(),
   priceCents: z.number().int().min(0).nullable(),
+  // 培訓費 + 書費 + 講師費 (staff only). When any is set, the database keeps
+  // price_cents equal to their sum; leave all null for a plain single price.
+  trainingFeeCents: z.number().int().min(0).nullable().optional(),
+  bookFeeCents: z.number().int().min(0).nullable().optional(),
+  instructorFeeCents: z.number().int().min(0).nullable().optional(),
   termLabel: z.string().max(100).optional(),
   serviceCategory: z.enum(serviceCategories),
   programLevel: z.enum(programLevels).nullable(),
@@ -53,3 +59,12 @@ export const courseQaSchema = z.object({
   body: z.string().min(1, "請輸入內容").max(2000),
 });
 export type CourseQaInput = z.infer<typeof courseQaSchema>;
+
+export const lessonTranscriptSchema = z.object({
+  lessonId: z.string().uuid(),
+  courseId: z.string().uuid(),
+  language: z.enum(TRANSCRIPT_LANGUAGE_CODES),
+  isOriginal: z.boolean(),
+  content: z.string().trim().min(1, "請貼上講稿內容").max(200_000),
+});
+export type LessonTranscriptInput = z.infer<typeof lessonTranscriptSchema>;

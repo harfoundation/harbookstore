@@ -32,6 +32,9 @@ type Course = {
   is_published: boolean;
   sort_order: number;
   price_cents: number | null;
+  training_fee_cents?: number | null;
+  book_fee_cents?: number | null;
+  instructor_fee_cents?: number | null;
   term_label: string | null;
   service_category: string;
   program_level: string | null;
@@ -45,6 +48,9 @@ const EMPTY: CourseFormInput = {
   isPublished: false,
   sortOrder: 0,
   priceCents: null,
+  trainingFeeCents: null,
+  bookFeeCents: null,
+  instructorFeeCents: null,
   termLabel: "",
   serviceCategory: "course",
   programLevel: null,
@@ -72,6 +78,48 @@ const PROGRAM_LEVEL_LABELS: Record<string, string> = {
   diploma_4: "Diploma — 第4級",
 };
 
+const FEE_FIELDS = [
+  { key: "trainingFeeCents", label: "培訓費" },
+  { key: "bookFeeCents", label: "書費" },
+  { key: "instructorFeeCents", label: "講師費" },
+] as const;
+
+type FeeKey = (typeof FEE_FIELDS)[number]["key"];
+
+// A course priced before the breakdown existed opens with its whole price as
+// the training fee, so saving it unchanged keeps the same total.
+function feesFromCourse(course: Course) {
+  const hasBreakdown =
+    course.training_fee_cents != null ||
+    course.book_fee_cents != null ||
+    course.instructor_fee_cents != null;
+  return hasBreakdown
+    ? {
+        trainingFeeCents: course.training_fee_cents ?? null,
+        bookFeeCents: course.book_fee_cents ?? null,
+        instructorFeeCents: course.instructor_fee_cents ?? null,
+      }
+    : {
+        trainingFeeCents: course.price_cents,
+        bookFeeCents: null,
+        instructorFeeCents: null,
+      };
+}
+
+// Updates one fee (entered in dollars) and recomputes the total the same way
+// the database trigger does.
+function withFee(form: CourseFormInput, key: FeeKey, dollars: string): CourseFormInput {
+  const next = {
+    ...form,
+    [key]: dollars === "" ? null : Math.round(Number(dollars) * 100),
+  };
+  const fees = [next.trainingFeeCents, next.bookFeeCents, next.instructorFeeCents];
+  next.priceCents = fees.every((f) => f == null)
+    ? null
+    : fees.reduce<number>((sum, f) => sum + (f ?? 0), 0);
+  return next;
+}
+
 export function CourseFormDialog({
   course,
   trigger,
@@ -91,6 +139,7 @@ export function CourseFormDialog({
           isPublished: course.is_published,
           sortOrder: course.sort_order,
           priceCents: course.price_cents,
+          ...feesFromCourse(course),
           termLabel: course.term_label ?? "",
           serviceCategory: course.service_category as CourseFormInput["serviceCategory"],
           programLevel: course.program_level as CourseFormInput["programLevel"],
@@ -167,20 +216,32 @@ export function CourseFormDialog({
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label>價格（澳幣分，留空為免費）</Label>
-              <Input
-                type="number"
-                value={form.priceCents ?? ""}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    priceCents: e.target.value ? Number(e.target.value) : null,
-                  })
-                }
-              />
+          <div className="space-y-1.5">
+            <Label>費用（澳幣，全部留空為免費）</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {FEE_FIELDS.map(({ key, label }) => (
+                <div key={key} className="space-y-1">
+                  <span className="text-muted-foreground text-xs">{label}</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    inputMode="decimal"
+                    value={form[key] != null ? form[key] / 100 : ""}
+                    onChange={(e) => setForm(withFee(form, key, e.target.value))}
+                  />
+                </div>
+              ))}
             </div>
+            <p className="text-muted-foreground text-xs">
+              報名總價：
+              {form.priceCents != null
+                ? `$${(form.priceCents / 100).toFixed(2)}`
+                : "免費"}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>期限（如：8週、一學期）</Label>
               <Input

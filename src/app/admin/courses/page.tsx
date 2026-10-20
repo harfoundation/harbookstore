@@ -29,7 +29,7 @@ export default async function AdminCoursesPage() {
   const { data: courses } = await supabase
     .from("courses")
     .select(
-      "id, title, instructor_name, is_published, sort_order, description, price_cents, term_label, service_category, program_level, accreditation_note, approval_status, review_notes, submitted_by, profiles!courses_submitted_by_fkey(display_name)",
+      "id, title, instructor_name, is_published, sort_order, description, price_cents, training_fee_cents, book_fee_cents, instructor_fee_cents, term_label, service_category, program_level, accreditation_note, approval_status, review_notes, submitted_by, profiles!courses_submitted_by_fkey(display_name)",
     )
     .order("sort_order");
 
