@@ -61,6 +61,9 @@ function getServerSnapshot(): Locale {
 
 function convertTextNode(node: Node) {
   if (node.nodeType !== Node.TEXT_NODE || !node.nodeValue) return;
+  // Opt-out for text that isn't Chinese, e.g. a Japanese lesson transcript,
+  // whose kanji must not be rewritten into simplified forms.
+  if (node.parentElement?.closest("[data-no-hans]")) return;
   const converted = toSimplified(node.nodeValue);
   // Guard against no-op writes so we don't re-trigger the MutationObserver
   // on text that's already simplified (would otherwise risk a feedback loop).

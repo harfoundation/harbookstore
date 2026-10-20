@@ -6,10 +6,13 @@ import {
   courseFormSchema,
   courseQaSchema,
   lessonFormSchema,
+  lessonTranscriptSchema,
   type CourseFormInput,
   type CourseQaInput,
   type LessonFormInput,
+  type LessonTranscriptInput,
 } from "@/lib/validation/course.schema";
+import type { TranscriptLanguage } from "@/lib/courses/transcript-languages";
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -30,6 +33,9 @@ export async function upsertCourse(input: CourseFormInput): Promise<ActionResult
     service_category: v.serviceCategory,
     program_level: v.programLevel,
     accreditation_note: v.accreditationNote || null,
+    training_fee_cents: v.trainingFeeCents ?? null,
+    book_fee_cents: v.bookFeeCents ?? null,
+    instructor_fee_cents: v.instructorFeeCents ?? null,
   };
 
   const { error } = v.id
@@ -185,5 +191,57 @@ export async function postCourseQa(input: CourseQaInput): Promise<ActionResult> 
   if (error) return { success: false, error: error.message };
 
   revalidatePath(`/courses/${parsed.data.courseId}`);
+  return { success: true };
+}
+
+export async function upsertLessonTranscript(
+  input: LessonTranscriptInput,
+): Promise<ActionResult> {
+  const parsed = lessonTranscriptSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "講稿資料無效" };
+  }
+
+  const supabase = await createClient();
+  const v = parsed.data;
+
+  // Only one original per lesson: marking this one clears the flag elsewhere.
+  if (v.isOriginal) {
+    const { error } = await supabase
+      .from("lesson_transcripts")
+      .update({ is_original: false })
+      .eq("lesson_id", v.lessonId)
+      .neq("language", v.language);
+    if (error) return { success: false, error: error.message };
+  }
+
+  const { error } = await supabase.from("lesson_transcripts").upsert({
+    lesson_id: v.lessonId,
+    language: v.language,
+    is_original: v.isOriginal,
+    content: v.content,
+  });
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath(`/admin/courses/${v.courseId}`);
+  revalidatePath(`/courses/${v.courseId}/lessons/${v.lessonId}`);
+  return { success: true };
+}
+
+export async function deleteLessonTranscript(
+  courseId: string,
+  lessonId: string,
+  language: TranscriptLanguage,
+): Promise<ActionResult> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("lesson_transcripts")
+    .delete()
+    .eq("lesson_id", lessonId)
+    .eq("language", language);
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath(`/admin/courses/${courseId}`);
+  revalidatePath(`/courses/${courseId}/lessons/${lessonId}`);
   return { success: true };
 }

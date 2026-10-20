@@ -3,6 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentProfile } from "@/lib/auth/get-current-profile";
 import { LessonProgressButton } from "@/components/courses/lesson-progress-button";
 import { CourseQaWall } from "@/components/courses/course-qa-wall";
+import {
+  LessonTranscriptReader,
+  type LessonTranscript,
+} from "@/components/courses/lesson-transcript-reader";
 
 export const dynamic = "force-dynamic";
 
@@ -25,21 +29,34 @@ export default async function LessonPage({
 
   const course = lesson.courses as unknown as { title: string } | null;
 
-  const [{ data: progress }, { data: qaMessages }] = await Promise.all([
-    profile
-      ? supabase
-          .from("course_progress")
-          .select("completed")
-          .eq("profile_id", profile.id)
-          .eq("lesson_id", lessonId)
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
-    supabase
-      .from("course_qa")
-      .select("id, body, is_instructor_reply, created_at, author:profiles(display_name)")
-      .eq("lesson_id", lessonId)
-      .order("created_at"),
-  ]);
+  const [{ data: progress }, { data: qaMessages }, { data: transcriptRows }] =
+    await Promise.all([
+      profile
+        ? supabase
+            .from("course_progress")
+            .select("completed")
+            .eq("profile_id", profile.id)
+            .eq("lesson_id", lessonId)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      supabase
+        .from("course_qa")
+        .select(
+          "id, body, is_instructor_reply, created_at, author:profiles(display_name)",
+        )
+        .eq("lesson_id", lessonId)
+        .order("created_at"),
+      supabase
+        .from("lesson_transcripts")
+        .select("language, is_original, content")
+        .eq("lesson_id", lessonId),
+    ]);
+
+  const transcripts: LessonTranscript[] = (transcriptRows ?? []).map((t) => ({
+    language: t.language as LessonTranscript["language"],
+    isOriginal: t.is_original,
+    content: t.content,
+  }));
 
   return (
     <div className="space-y-8">
@@ -62,6 +79,8 @@ export default async function LessonPage({
           <span className="text-muted-foreground text-sm">尚無影片</span>
         </div>
       )}
+
+      {transcripts.length > 0 && <LessonTranscriptReader transcripts={transcripts} />}
 
       <LessonProgressButton
         lessonId={lesson.id}

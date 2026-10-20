@@ -70,7 +70,9 @@ async function fetchBookPrices(
 ) {
   const { data, error } = await supabase
     .from("books")
-    .select("id, price_cents, group_buy_price_cents, group_buy_min_qty, category_id, poster_number")
+    .select(
+      "id, price_cents, group_buy_price_cents, group_buy_min_qty, category_id, poster_number",
+    )
     .in("id", bookIds);
   if (error) throw error;
   return new Map<string, BookPricing>(
@@ -103,7 +105,10 @@ async function fetchActiveSeriesBookCount(
 }
 
 /** Retail/gift orders unlock the group-buy price once quantity hits the book's minimum. */
-function resolveUnitPriceCents(pricing: BookPricing | undefined, quantity: number): number {
+function resolveUnitPriceCents(
+  pricing: BookPricing | undefined,
+  quantity: number,
+): number {
   if (!pricing) return 0;
   if (
     pricing.groupBuyPriceCents != null &&
@@ -308,10 +313,15 @@ export async function createCourseEnrollmentOrder(
   const { courseId, paymentMethod } = parsed.data;
   const { data: course } = await supabase
     .from("courses")
-    .select("price_cents")
+    .select("price_cents, training_fee_cents, book_fee_cents, instructor_fee_cents")
     .eq("id", courseId)
     .single();
   const unitPriceCents = course?.price_cents ?? 0;
+  const hasFeeBreakdown =
+    course != null &&
+    (course.training_fee_cents != null ||
+      course.book_fee_cents != null ||
+      course.instructor_fee_cents != null);
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -332,6 +342,13 @@ export async function createCourseEnrollmentOrder(
     course_id: courseId,
     quantity: 1,
     unit_price_cents: unitPriceCents,
+    fee_breakdown: hasFeeBreakdown
+      ? {
+          training_fee_cents: course.training_fee_cents ?? 0,
+          book_fee_cents: course.book_fee_cents ?? 0,
+          instructor_fee_cents: course.instructor_fee_cents ?? 0,
+        }
+      : null,
   });
 
   if (itemsError) {
@@ -377,7 +394,10 @@ export async function adminUpdateOrderStatus(
   if (parsed.data.status === "confirmed") {
     const profile = data.profiles as unknown as { phone: string | null } | null;
     if (profile?.phone) {
-      await sendOrderConfirmedWhatsapp({ to: profile.phone, orderNumber: data.order_number });
+      await sendOrderConfirmedWhatsapp({
+        to: profile.phone,
+        orderNumber: data.order_number,
+      });
     }
   }
 
