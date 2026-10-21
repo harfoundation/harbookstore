@@ -75,7 +75,14 @@ export async function updateSession(request: NextRequest) {
     // link is shared with invited students directly rather than via the nav.
     "/tutor",
   ];
-  const PUBLIC_ALLOWED_PREFIXES = ["/articles", "/catalog", "/categories", "/live-translate"];
+  // "/planting": HAR 植堂學院 intro + application (apply page itself requires login).
+  const PUBLIC_ALLOWED_PREFIXES = [
+    "/articles",
+    "/catalog",
+    "/categories",
+    "/live-translate",
+    "/planting",
+  ];
   const isPublicPath =
     PUBLIC_ALLOWED_PATHS.includes(request.nextUrl.pathname) ||
     PUBLIC_ALLOWED_PREFIXES.some((prefix) => request.nextUrl.pathname.startsWith(prefix));

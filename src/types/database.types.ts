@@ -2011,6 +2011,138 @@ export type Database = {
           },
         ]
       }
+      planting_application_notes: {
+        Row: {
+          application_id: string
+          interview_notes: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          interview_notes: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          interview_notes?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planting_application_notes_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "planting_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planting_application_notes_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "planting_application_notes_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      planting_applications: {
+        Row: {
+          cohort_label: string
+          contact_email: string
+          contact_phone: string | null
+          created_at: string
+          full_name: string
+          home_church: string | null
+          id: string
+          planting_vision: string
+          profile_id: string
+          referee_contact: string | null
+          referee_name: string | null
+          reviewed_by: string | null
+          seminary_background: string | null
+          status: string
+          track: string
+          updated_at: string
+          weekly_hours: number | null
+        }
+        Insert: {
+          cohort_label: string
+          contact_email: string
+          contact_phone?: string | null
+          created_at?: string
+          full_name: string
+          home_church?: string | null
+          id?: string
+          planting_vision: string
+          profile_id: string
+          referee_contact?: string | null
+          referee_name?: string | null
+          reviewed_by?: string | null
+          seminary_background?: string | null
+          status?: string
+          track: string
+          updated_at?: string
+          weekly_hours?: number | null
+        }
+        Update: {
+          cohort_label?: string
+          contact_email?: string
+          contact_phone?: string | null
+          created_at?: string
+          full_name?: string
+          home_church?: string | null
+          id?: string
+          planting_vision?: string
+          profile_id?: string
+          referee_contact?: string | null
+          referee_name?: string | null
+          reviewed_by?: string | null
+          seminary_background?: string | null
+          status?: string
+          track?: string
+          updated_at?: string
+          weekly_hours?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "planting_applications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "planting_applications_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "planting_applications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "member_points_totals"
+            referencedColumns: ["profile_id"]
+          },
+          {
+            foreignKeyName: "planting_applications_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       preference_tags: {
         Row: {
           id: string
